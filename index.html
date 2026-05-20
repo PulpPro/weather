@@ -249,29 +249,48 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           </div>
           <div class="advice-text" id="a-text">—</div>
           <div style="margin-bottom:8px;">
-            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px;">Start temperature per programme</div>
+            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Ripening temperature schedule</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:7px;">
+
+              <!-- 5-day -->
               <div class="tcrd" id="tcrd-5">
-                <div class="tlbl">5-day · Fast</div>
-                <div class="tval green" id="a-start-5">—</div>
+                <div class="tlbl" style="color:rgba(166,226,46,0.6);margin-bottom:6px;">5-day · Fast</div>
+                <div id="schedule-5"></div>
+                <div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:7px;padding-top:7px;">
+                  <div class="tlbl">Storage</div>
+                  <div class="tval" style="font-size:13px;" id="a-storage-5">—</div>
+                </div>
               </div>
+
+              <!-- 6-day -->
               <div class="tcrd" id="tcrd-6">
-                <div class="tlbl">6-day · Standard</div>
-                <div class="tval green" id="a-start-6">—</div>
+                <div class="tlbl" style="color:rgba(166,226,46,0.6);margin-bottom:6px;">6-day · Standard</div>
+                <div id="schedule-6"></div>
+                <div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:7px;padding-top:7px;">
+                  <div class="tlbl">Storage</div>
+                  <div class="tval" style="font-size:13px;" id="a-storage-6">—</div>
+                </div>
               </div>
+
+              <!-- 7-day -->
               <div class="tcrd" id="tcrd-7">
-                <div class="tlbl">7-day · Slow</div>
-                <div class="tval green" id="a-start-7">—</div>
+                <div class="tlbl" style="color:rgba(166,226,46,0.6);margin-bottom:6px;">7-day · Slow</div>
+                <div id="schedule-7"></div>
+                <div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:7px;padding-top:7px;">
+                  <div class="tlbl">Storage</div>
+                  <div class="tval" style="font-size:13px;" id="a-storage-7">—</div>
+                </div>
               </div>
+
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
               <div class="tcrd">
-                <div class="tlbl">Storage temp</div>
-                <div class="tval" id="a-storage">—</div>
-              </div>
-              <div class="tcrd">
                 <div class="tlbl">Shelf adjust</div>
                 <div class="tval orange" id="a-shelf">—</div>
+              </div>
+              <div class="tcrd">
+                <div class="tlbl">Risk level</div>
+                <div class="tval" id="a-risk-lbl" style="font-size:13px;">—</div>
               </div>
             </div>
           </div>
@@ -325,37 +344,68 @@ const ORIGINS = [
   { name:'Peru',        flag:'🇵🇪', lat:-9.19, lon:-75.01, region:'South America · Pacific',transit:{lat:5,lon:-40} }
 ];
 
-// ── TEMPERATURE CALCULATION (done in code, not AI) ──────────────
-// Base start temps per programme
-const BASE_TEMPS = { 5: 21.0, 6: 18.5, 7: 15.5 };
-const STORAGE_TEMP = 13.5;
+// ── TEMPERATURE CALCULATION ──────────────────────────────────────
+// Industry-standard base temps (CIRAD / Chiquita ripening protocols)
+// 5-day: starts high (~18.5°C) — drops 0.5°C each day to end at colour 5
+// 6-day: starts at 16.5°C — drops 0.5°C each day
+// 7-day: starts at 14.5°C — drops 0.5°C each day
+// Storage (post-ripening): 13.0°C always
+const BASE_STARTS = { 5: 18.5, 6: 16.5, 7: 14.5 };
+const STORAGE_TEMP = 13.0;
 
-function calcTemps(w, prog) {
-  let base = BASE_TEMPS[prog];
-  let adjustment = 0;
+function calcWeatherAdj(w) {
+  let adj = 0;
+  // Origin heat/humidity stress → reduce start temp (fruit already stressed)
+  if (w.origin.temp >= 32 || w.origin.humidity >= 88)      adj -= 1.0;
+  else if (w.origin.temp >= 29 || w.origin.humidity >= 80) adj -= 0.5;
+  else if (w.origin.temp <= 23 && w.origin.humidity <= 65) adj += 0.5;
+  // Transit: warm seas → reduce slightly
+  if (w.transit.temp >= 27)      adj -= 0.5;
+  else if (w.transit.temp <= 18) adj += 0.5;
+  // Chilling risk in transit
+  if (w.transit.temp <= 14) adj += 1.0;
+  // Arrival warehouse temp
+  const arr = (w.nl.temp + w.be.temp) / 2;
+  if (arr >= 20)      adj -= 0.5;
+  else if (arr <= 10) adj += 0.5;
+  // Round to nearest 0.5
+  return Math.round(adj * 2) / 2;
+}
 
-  // Origin stress: hot & humid = reduce start temp (fruit already stressed, don't push harder)
-  if (w.origin.temp >= 30 || w.origin.humidity >= 85) adjustment -= 1.5;
-  else if (w.origin.temp >= 27 || w.origin.humidity >= 75) adjustment -= 0.5;
-  else if (w.origin.temp <= 22 && w.origin.humidity <= 65) adjustment += 0.5;
+function buildSchedule(prog, startTemp) {
+  // Each day drops 0.5°C max — industry standard gradual cooling
+  const schedule = [];
+  for (let d = 1; d <= prog; d++) {
+    const t = startTemp - ((d - 1) * 0.5);
+    schedule.push({ day: d, temp: Math.max(t, STORAGE_TEMP + 0.5) });
+  }
+  return schedule;
+}
 
-  // Transit: warm sea = reduce slightly
-  if (w.transit.temp >= 27) adjustment -= 0.5;
-  else if (w.transit.temp <= 20) adjustment += 0.5;
+function calcAllTemps(w) {
+  const adj = calcWeatherAdj(w);
+  const result = {};
+  [5, 6, 7].forEach(prog => {
+    const start = Math.round((BASE_STARTS[prog] + adj) * 2) / 2;
+    result[prog] = {
+      start: start,
+      schedule: buildSchedule(prog, start),
+      storage: STORAGE_TEMP
+    };
+  });
+  return result;
+}
 
-  // Arrival: warm NL/BE = reduce (fruit will ripen faster in warehouse)
-  const arrivalAvg = (w.nl.temp + w.be.temp) / 2;
-  if (arrivalAvg >= 20) adjustment -= 0.5;
-  else if (arrivalAvg <= 12) adjustment += 0.5;
-
-  // Chilling injury risk in transit: raise start temp slightly
-  if (w.transit.temp <= 14) adjustment += 1.0;
-
-  const startTemp = Math.round((base + adjustment) * 2) / 2; // round to nearest 0.5
-  return {
-    startTemp: startTemp.toFixed(1) + '°C',
-    storageTemp: STORAGE_TEMP.toFixed(1) + '°C'
-  };
+function renderSchedule(prog, temps) {
+  const s = temps[prog];
+  const html = s.schedule.map(d =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+      <span style="font-size:9px;color:var(--text3);font-weight:600;">Day ${d.day}</span>
+      <span style="font-size:11px;font-weight:800;color:var(--lime);">${d.temp.toFixed(1)}°C</span>
+    </div>`
+  ).join('');
+  document.getElementById('schedule-' + prog).innerHTML = html;
+  document.getElementById('a-storage-' + prog).innerText = s.storage.toFixed(1) + '°C';
 }
 
 function calcShelfAdj(w) {
@@ -499,63 +549,67 @@ function badge(temp, humidity, type) {
 
 async function askGroq(w) {
   const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  const temps = calcTemps(w, currentProg);
+  const adj = calcWeatherAdj(w);
+  const allTemps = calcAllTemps(w);
   const shelfAdj = calcShelfAdj(w);
   const riskInfo = calcRisk(w);
+  const adjDesc = adj < 0 ? `reduced by ${Math.abs(adj)}°C due to stress` : adj > 0 ? `raised by ${adj}°C due to cool conditions` : 'no adjustment needed';
 
-  const prompt = `You are a professional banana ripening expert advising fruit importers in the Netherlands and Belgium.
+  const prompt = `You are a senior banana ripening specialist with 20+ years experience advising importers and ripening rooms in the Netherlands and Belgium. You apply CIRAD and Chiquita post-harvest protocols.
 
-TODAY: ${today}
+DATE: ${today}
 ORIGIN: ${currentOrigin.name} (${currentOrigin.region})
-PROGRAMME: ${currentProg}-day
-CALCULATED START TEMP: ${temps.startTemp}
-STORAGE TEMP: ${temps.storageTemp}
+WEATHER ADJUSTMENT: ${adjDesc}
+RISK: ${riskInfo.risk} — ${riskInfo.title}
 SHELF ADJUSTMENT: ${shelfAdj}
-RISK LEVEL: ${riskInfo.risk}
 
-LIVE WEATHER:
-- ${currentOrigin.name} origin: ${w.origin.temp}°C, ${w.origin.humidity}% RH, ${w.origin.desc}, wind ${w.origin.wind} km/h, precip ${w.origin.precip}mm
-- Transit (mid-ocean, ~4 weeks): ${w.transit.temp}°C, ${w.transit.humidity}% RH, ${w.transit.desc}, wind ${w.transit.wind} km/h
-- Netherlands Rotterdam: ${w.nl.temp}°C, ${w.nl.humidity}% RH, ${w.nl.desc}
-- Belgium Antwerp: ${w.be.temp}°C, ${w.be.humidity}% RH, ${w.be.desc}
+CALCULATED RIPENING SCHEDULES (industry CIRAD protocol, 0.5°C daily drop):
+- 5-day: ${allTemps[5].schedule.map(d=>`Day ${d.day}: ${d.temp.toFixed(1)}°C`).join(', ')} → storage ${STORAGE_TEMP}°C
+- 6-day: ${allTemps[6].schedule.map(d=>`Day ${d.day}: ${d.temp.toFixed(1)}°C`).join(', ')} → storage ${STORAGE_TEMP}°C
+- 7-day: ${allTemps[7].schedule.map(d=>`Day ${d.day}: ${d.temp.toFixed(1)}°C`).join(', ')} → storage ${STORAGE_TEMP}°C
 
-Write practical advice for the ripening team using the pre-calculated temperatures above. Also identify any special weather events and defect risks based on the actual weather data.
+LIVE WEATHER DATA:
+- ${currentOrigin.name} origin: ${w.origin.temp}°C, ${w.origin.humidity}% RH, ${w.origin.desc}, wind ${w.origin.wind} km/h, precipitation ${w.origin.precip}mm
+- Mid-ocean transit (~4-week journey): ${w.transit.temp}°C, ${w.transit.humidity}% RH, ${w.transit.desc}, wind ${w.transit.wind} km/h
+- Rotterdam NL: ${w.nl.temp}°C, ${w.nl.humidity}% RH, ${w.nl.desc}
+- Antwerp BE: ${w.be.temp}°C, ${w.be.humidity}% RH, ${w.be.desc}
 
-Consider: El Niño/La Niña patterns, storm risk (high wind/thunderstorm codes), chilling injury risk (transit below 14°C), extreme heat (origin above 35°C), humidity disease pressure (RH above 85%), seasonal patterns for ${currentOrigin.region}.
+YOUR TASKS:
+1. Write practical ripening room advice (4-5 sentences) referencing the actual calculated temperatures. Explain WHY the weather led to this adjustment. Include what colour stage to expect at each check point and any critical actions.
+2. Identify special weather events (El Niño/La Niña patterns, tropical storms, extreme heat above 35°C, chilling injury risk below 14°C transit, heavy rainfall/flooding at origin, hurricane season activity). Be specific — only report what the data actually suggests.
+3. List the most relevant quality defects to inspect for, with clear visual descriptions and the exact weather mechanism causing each one.
 
 Return ONLY valid JSON (no markdown, no backticks):
 {
-  "advice": "4-5 sentences of practical advice for the ripening team. Reference the start temp ${temps.startTemp} and explain why based on weather. Include what to monitor and any special actions.",
+  "advice": "4-5 sentences. Reference specific temperatures and days. Practical and actionable for a ripening room operator.",
   "events": [
-    {"name": "event name", "icon": "emoji", "desc": "2-3 sentences explaining what is happening and the impact on banana quality and what to do"}
+    {
+      "name": "specific event name",
+      "icon": "emoji",
+      "desc": "2-3 sentences: what is detected, its impact on banana physiology and quality, and what the team must do"
+    }
   ],
   "defects": [
-    {"name": "defect name", "icon": "emoji", "desc": "2 sentences: what to look for and why current weather causes this", "risk": "high or medium or low"}
+    {
+      "name": "defect name",
+      "icon": "emoji",
+      "desc": "Sentence 1: what it looks like. Sentence 2: exactly which weather condition causes it and the mechanism.",
+      "risk": "high or medium or low"
+    }
   ]
 }
-
-events: 0–4 real detected events, empty array if none.
-defects: 4–6 most relevant based on actual conditions.`;
+events: 0–4 items. Empty array [] if no special conditions detected.
+defects: exactly 5 items, most relevant to current conditions.`;
 
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':`Bearer ${GROQ_KEY}`},
-    body:JSON.stringify({model:MODEL,max_tokens:1200,temperature:0.2,messages:[{role:'user',content:prompt}]})
+    body:JSON.stringify({model:MODEL,max_tokens:1400,temperature:0.15,messages:[{role:'user',content:prompt}]})
   });
   const d = await r.json();
   const raw = d.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
   const parsed = JSON.parse(raw);
-
-  // Merge pre-calculated values
-  return {
-    ...parsed,
-    startTemp: temps.startTemp,
-    storageTemp: temps.storageTemp,
-    shelfAdj: shelfAdj,
-    icon: riskInfo.icon,
-    title: riskInfo.title,
-    risk: riskInfo.risk
-  };
+  return { ...parsed, shelfAdj, icon: riskInfo.icon, title: riskInfo.title, risk: riskInfo.risk, allTemps };
 }
 
 function showLoading(text) {
@@ -630,22 +684,22 @@ function applyResult(res) {
   document.getElementById('a-title').innerText = res.title;
   document.getElementById('a-text').innerText = res.advice;
 
-  // Show all three programme temps
+  // Render all three schedules
+  const allTemps = res.allTemps || calcAllTemps(lastWeather);
   [5,6,7].forEach(p => {
-    const t = calcTemps(lastWeather, p);
-    document.getElementById('a-start-' + p).innerText = t.startTemp;
+    renderSchedule(p, allTemps);
     const card = document.getElementById('tcrd-' + p);
     if (p === currentProg) {
       card.style.borderColor = 'rgba(166,226,46,0.4)';
-      card.style.background = 'rgba(166,226,46,0.06)';
+      card.style.background = 'rgba(166,226,46,0.05)';
     } else {
       card.style.borderColor = 'rgba(255,255,255,0.05)';
       card.style.background = 'rgba(0,0,0,0.45)';
     }
   });
 
-  document.getElementById('a-storage').innerText = res.storageTemp;
   document.getElementById('a-shelf').innerText = res.shelfAdj;
+  document.getElementById('a-risk-lbl').innerText = res.title;
 
   // Events
   const secEvents = document.getElementById('section-events');
