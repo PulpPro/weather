@@ -15,67 +15,63 @@
   --text:#fff;--text2:rgba(255,255,255,0.65);--text3:rgba(255,255,255,0.3);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden}
-.app{height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;padding-bottom:60px}
 
 /* Header */
-.hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:rgba(3,3,3,0.98)}
+.hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(3,3,3,0.97);backdrop-filter:blur(20px);z-index:100}
 .hdr-left{display:flex;align-items:center;gap:10px}
 .hdr-icon{width:32px;height:32px;background:var(--lime);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
 .hdr-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;letter-spacing:-0.3px}
 .hdr-sub{font-size:9px;color:var(--text3);margin-top:1px}
+.back-btn{display:none;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:10px;font-weight:700;color:var(--text2);cursor:pointer;text-transform:uppercase;letter-spacing:1px}
+.back-btn:hover{background:rgba(255,255,255,0.08)}
 .live-pill{display:flex;align-items:center;gap:5px;background:var(--blue-dim);border:1px solid var(--blue-border);border-radius:100px;padding:5px 11px;font-size:9px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px}
 .live-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
 
-/* Tab nav */
-.tab-nav{display:flex;padding:0 20px;border-bottom:1px solid var(--border);flex-shrink:0;gap:0;overflow-x:auto;scrollbar-width:none}
-.tab-nav::-webkit-scrollbar{display:none}
-.tab{padding:12px 14px;font-size:10px;font-weight:700;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;text-transform:uppercase;letter-spacing:1px;transition:all 0.2s;flex-shrink:0}
-.tab.active{color:var(--lime);border-bottom-color:var(--lime)}
-.tab:hover:not(.active){color:var(--text2)}
-.tab-badge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--red);color:#fff;font-size:8px;font-weight:900;margin-left:5px;vertical-align:middle}
+/* ── ORIGIN LIST ── */
+#origin-list-page{padding:20px}
+.page-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:900;letter-spacing:-0.8px;margin-bottom:4px}
+.page-sub{font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.6}
+.origin-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:14px}
+.origin-card:hover{border-color:rgba(74,158,255,0.35);background:rgba(74,158,255,0.03)}
+.origin-card:active{transform:scale(0.99)}
+.origin-flag{font-size:32px;flex-shrink:0}
+.origin-info{flex:1}
+.origin-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.3px;margin-bottom:2px}
+.origin-meta{font-size:10px;color:var(--text3);font-weight:500}
+.origin-arrow{width:28px;height:28px;border-radius:50%;background:rgba(74,158,255,0.08);border:1px solid rgba(74,158,255,0.2);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:14px;flex-shrink:0}
 
-/* Scrollable content area */
-.content{flex:1;overflow-y:auto;scrollbar-width:none}
-.content::-webkit-scrollbar{display:none}
-.page{display:none;padding:18px 20px;flex-direction:column;gap:14px}
-.page.active{display:flex}
+/* ── REPORT PAGE ── */
+#report-page{display:none;padding:0}
+.report-hero{padding:20px 20px 16px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.report-hero-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.report-hero-flag{font-size:44px}
+.report-hero-info{flex:1}
+.report-origin-name{font-family:'Syne',sans-serif;font-size:24px;font-weight:900;letter-spacing:-0.8px;margin-bottom:2px}
+.report-origin-sub{font-size:11px;color:var(--text3);font-weight:500}
+.prog-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.prog-btn{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:11px 4px;font-family:'Syne',sans-serif;font-size:18px;font-weight:900;color:var(--text3);text-align:center;cursor:pointer;transition:all 0.2s;line-height:1}
+.prog-btn span{display:block;font-family:'Inter',sans-serif;font-size:8px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-top:3px}
+.prog-btn.active{background:var(--lime-dim);border-color:var(--lime-border);color:var(--lime)}
+.prog-btn.active span{color:rgba(166,226,46,0.5)}
 
-/* Section label */
-.slbl{font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:7px}
+.report-body{padding:16px 20px;display:flex;flex-direction:column;gap:14px}
 
-/* Origin grid */
-.origin-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.obtn{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:11px 10px;font-size:11px;font-weight:600;color:var(--text3);text-align:center;cursor:pointer;transition:all 0.2s}
-.obtn:hover{border-color:var(--blue-border);color:var(--text2)}
-.obtn.active{background:var(--blue-dim);border-color:rgba(74,158,255,0.4);color:var(--blue);font-weight:700}
+/* Loading */
+.loading-state{text-align:center;padding:40px 20px;display:none;flex-direction:column;align-items:center;gap:10px}
+.loading-spinner{font-size:32px;animation:spin 1s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.loading-text{font-size:12px;color:var(--text3);font-weight:600}
 
-/* Programme */
-.prog-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}
-.pbtn{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:12px 4px;font-family:'Syne',sans-serif;font-size:20px;font-weight:900;color:var(--text3);text-align:center;cursor:pointer;transition:all 0.2s;line-height:1}
-.pbtn span{display:block;font-family:'Inter',sans-serif;font-size:7px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px}
-.pbtn.active{background:var(--lime-dim);border-color:var(--lime-border);color:var(--lime)}
-.pbtn.active span{color:rgba(166,226,46,0.5)}
+/* Section title */
+.sec-title{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
 
-/* Analyse button */
-.analyse-btn{width:100%;background:var(--lime);border:none;border-radius:100px;padding:14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:800;color:#000;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all 0.2s}
-.analyse-btn:disabled{opacity:0.5;cursor:not-allowed}
-.analyse-btn:hover:not(:disabled){background:#b8f030}
-
-/* Selection summary */
-.sel-summary{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
-.sel-item{text-align:center}
-.sel-lbl{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
-.sel-val{font-size:13px;font-weight:700;color:var(--text)}
-.sel-divider{width:1px;height:32px;background:var(--border)}
-
-/* Weather rows */
+/* Weather card */
 .weather-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .weather-box-hdr{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .weather-box-title{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px}
-.wstat{font-size:9px;font-weight:600;color:var(--text3)}
 .wrow{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04)}
 .wrow:last-child{border-bottom:none}
 .wflag{font-size:18px;width:22px;text-align:center;flex-shrink:0}
@@ -87,7 +83,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);-webk
 .bok{background:rgba(166,226,46,0.08);color:var(--lime);border-color:rgba(166,226,46,0.2)}
 .bwarn{background:rgba(255,140,0,0.1);color:var(--amber);border-color:rgba(255,140,0,0.2)}
 .bbad{background:rgba(255,80,80,0.1);color:var(--red);border-color:rgba(255,80,80,0.2)}
-.bloading{background:rgba(255,255,255,0.04);color:var(--text3);border-color:var(--border)}
 
 /* Advice card */
 .advice-card{border-radius:14px;padding:16px;border:1px solid var(--lime-border);background:rgba(166,226,46,0.04);transition:all 0.4s}
@@ -103,49 +98,37 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);-webk
 .tval.green{color:var(--lime)}
 .tval.orange{color:var(--amber)}
 
-/* Events card */
+/* Events */
 .events-card{background:var(--bg2);border:1px solid rgba(255,80,80,0.2);border-radius:14px;overflow:hidden}
-.events-hdr{padding:10px 14px;border-bottom:1px solid rgba(255,80,80,0.12);display:flex;align-items:center;gap:7px}
+.events-hdr{padding:10px 14px;border-bottom:1px solid rgba(255,80,80,0.1);display:flex;align-items:center;gap:7px}
 .events-title{font-size:9px;font-weight:700;color:rgba(255,80,80,0.7);text-transform:uppercase;letter-spacing:1.5px}
-.erow{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.erow{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.04)}
 .erow:last-child{border-bottom:none}
 .eicon{font-size:18px;flex-shrink:0;width:22px;text-align:center;margin-top:1px}
 .ename{font-size:12px;font-weight:700;color:#ff7070;margin-bottom:3px}
-.edesc{font-size:11px;color:var(--text2);line-height:1.6}
+.edesc{font-size:11px;color:var(--text2);line-height:1.65}
 
-/* Defects card */
+/* Defects */
 .defects-card{background:var(--bg2);border:1px solid rgba(255,140,0,0.15);border-radius:14px;overflow:hidden}
 .defects-hdr{padding:10px 14px;border-bottom:1px solid rgba(255,140,0,0.1);display:flex;align-items:center;gap:7px}
 .defects-title{font-size:9px;font-weight:700;color:rgba(255,140,0,0.7);text-transform:uppercase;letter-spacing:1.5px}
-.drow{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.drow{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.04)}
 .drow:last-child{border-bottom:none}
 .dicon{font-size:18px;flex-shrink:0;width:22px;text-align:center;margin-top:1px}
 .dinfo{flex:1}
 .dname{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
-.ddesc{font-size:11px;color:var(--text2);line-height:1.6}
-.drisk{font-size:7px;font-weight:800;text-transform:uppercase;padding:3px 8px;border-radius:20px;flex-shrink:0;margin-top:2px;border:1px solid}
+.ddesc{font-size:11px;color:var(--text2);line-height:1.65}
+.drisk{font-size:7px;font-weight:800;text-transform:uppercase;padding:3px 8px;border-radius:20px;flex-shrink:0;margin-top:2px;border:1px solid;white-space:nowrap}
 .rhigh{background:rgba(255,80,80,0.1);color:var(--red);border-color:rgba(255,80,80,0.2)}
 .rmed{background:rgba(255,140,0,0.1);color:var(--amber);border-color:rgba(255,140,0,0.2)}
 .rlow{background:rgba(166,226,46,0.08);color:var(--lime);border-color:rgba(166,226,46,0.2)}
 
-/* AI loading */
-.ai-loader{text-align:center;padding:24px;display:none;flex-direction:column;align-items:center;gap:8px}
-.ai-spinner{font-size:28px;animation:spin 1s linear infinite}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.ai-loader-text{font-size:11px;color:var(--text3);font-weight:600}
-
-/* Empty state */
-.empty-state{text-align:center;padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px}
-.empty-emoji{font-size:40px}
-.empty-title{font-size:14px;font-weight:700;color:var(--text2)}
-.empty-sub{font-size:11px;color:var(--text3);line-height:1.6;max-width:240px}
-
-/* Refresh btn */
-.refresh-btn{width:100%;background:transparent;border:1px solid var(--blue-border);border-radius:100px;padding:12px;font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
+.err-box{background:rgba(255,80,80,0.06);border:1px solid rgba(255,80,80,0.15);border-radius:11px;padding:12px 14px;font-size:11px;color:rgba(255,120,120,0.9);line-height:1.6;display:none}
+.refresh-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0}
+.refresh-btn{background:transparent;border:1px solid var(--blue-border);border-radius:100px;padding:9px 18px;font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
 .refresh-btn:hover{background:var(--blue-dim)}
 .refresh-btn:disabled{opacity:0.4;cursor:not-allowed}
-.last-upd{text-align:center;font-size:9px;color:var(--text3)}
-.err-box{background:rgba(255,80,80,0.06);border:1px solid rgba(255,80,80,0.15);border-radius:11px;padding:12px 14px;font-size:11px;color:rgba(255,120,120,0.9);line-height:1.6;display:none}
+.last-upd{font-size:9px;color:var(--text3)}
 </style>
 </head>
 <body>
@@ -156,223 +139,254 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);-webk
     <div class="hdr-left">
       <div class="hdr-icon">🍌</div>
       <div>
-        <div class="hdr-title">Ripening Advice</div>
-        <div class="hdr-sub">Live weather · AI powered</div>
+        <div class="hdr-title" id="hdr-title">Ripening Advice</div>
+        <div class="hdr-sub" id="hdr-sub">Select an origin to begin</div>
       </div>
     </div>
-    <div class="live-pill"><div class="live-dot"></div>Live</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="back-btn" id="back-btn" onclick="showOriginList()">← Origins</div>
+      <div class="live-pill"><div class="live-dot"></div>Live</div>
+    </div>
   </div>
 
-  <!-- Tab nav -->
-  <div class="tab-nav">
-    <div class="tab active" onclick="showTab('setup')">Setup</div>
-    <div class="tab" onclick="showTab('weather')" id="tab-weather">Weather</div>
-    <div class="tab" onclick="showTab('advice')" id="tab-advice">Advice</div>
-    <div class="tab" onclick="showTab('events')" id="tab-events">Events <span class="tab-badge" id="events-badge" style="display:none">0</span></div>
-    <div class="tab" onclick="showTab('defects')" id="tab-defects">Defects</div>
+  <!-- ORIGIN LIST -->
+  <div id="origin-list-page">
+    <div style="padding:20px 20px 0">
+      <div class="page-title">Select Origin</div>
+      <div class="page-sub">Choose a banana origin to get a full live weather report and ripening advice.</div>
+    </div>
+    <div style="padding:0 20px 20px" id="origins-container"></div>
   </div>
 
-  <!-- Content -->
-  <div class="content">
+  <!-- REPORT PAGE -->
+  <div id="report-page">
 
-    <!-- SETUP PAGE -->
-    <div class="page active" id="page-setup">
-      <div>
-        <div class="slbl">Select Origin</div>
-        <div class="origin-grid" id="origins">
-          <div class="obtn active" onclick="selectOrigin(this,'Cameroon',4.05,9.70,'🇨🇲')">🇨🇲 Cameroon</div>
-          <div class="obtn" onclick="selectOrigin(this,'Colombia',4.57,-74.30,'🇨🇴')">🇨🇴 Colombia</div>
-          <div class="obtn" onclick="selectOrigin(this,'Costa Rica',9.93,-84.09,'🇨🇷')">🇨🇷 Costa Rica</div>
-          <div class="obtn" onclick="selectOrigin(this,'Ecuador',-1.83,-78.18,'🇪🇨')">🇪🇨 Ecuador</div>
-          <div class="obtn" onclick="selectOrigin(this,'Ghana',7.95,-1.02,'🇬🇭')">🇬🇭 Ghana</div>
-          <div class="obtn" onclick="selectOrigin(this,'Guatemala',14.64,-90.51,'🇬🇹')">🇬🇹 Guatemala</div>
-          <div class="obtn" onclick="selectOrigin(this,'Ivory Coast',5.35,-4.00,'🇨🇮')">🇨🇮 Ivory Coast</div>
-          <div class="obtn" onclick="selectOrigin(this,'Panama',8.99,-79.52,'🇵🇦')">🇵🇦 Panama</div>
-          <div class="obtn" onclick="selectOrigin(this,'Peru',-9.19,-75.01,'🇵🇪')">🇵🇪 Peru</div>
+    <!-- Hero with flag + programme selector -->
+    <div class="report-hero">
+      <div class="report-hero-top">
+        <div class="report-hero-flag" id="r-flag">🌍</div>
+        <div class="report-hero-info">
+          <div class="report-origin-name" id="r-name">—</div>
+          <div class="report-origin-sub" id="r-sub">—</div>
         </div>
       </div>
-      <div>
-        <div class="slbl">Ripening Programme</div>
-        <div class="prog-grid">
-          <div class="pbtn" onclick="selectProg(this,5)">5<span>days · Fast</span></div>
-          <div class="pbtn active" onclick="selectProg(this,6)">6<span>days · Standard</span></div>
-          <div class="pbtn" onclick="selectProg(this,7)">7<span>days · Slow</span></div>
-        </div>
+      <div class="sec-title">Ripening Programme</div>
+      <div class="prog-selector">
+        <div class="prog-btn" onclick="changeProg(this,5)">5<span>days · Fast</span></div>
+        <div class="prog-btn active" id="prog-6" onclick="changeProg(this,6)">6<span>days · Standard</span></div>
+        <div class="prog-btn" onclick="changeProg(this,7)">7<span>days · Slow</span></div>
       </div>
-      <div style="background:rgba(166,226,46,0.04);border:1px solid var(--lime-border);border-radius:11px;padding:12px 14px;">
-        <div style="font-size:9px;font-weight:700;color:rgba(166,226,46,0.6);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px;">Temperature logic</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.65;">5-day = higher start temp (faster ripening) · 7-day = lower start temp (slower ripening). All temps are then adjusted up or down based on live weather stress factors.</div>
-      </div>
-      <button class="analyse-btn" id="analyse-btn" onclick="runAnalysis()">🧠 Analyse &amp; Get Advice</button>
-      <div class="err-box" id="err-setup"></div>
     </div>
 
-    <!-- WEATHER PAGE -->
-    <div class="page" id="page-weather">
-      <div class="weather-box">
-        <div class="weather-box-hdr">
-          <div class="weather-box-title">Live conditions</div>
-          <div class="wstat" id="wstat">—</div>
-        </div>
-        <div class="wrow">
-          <div class="wflag" id="w-flag">🌍</div>
-          <div class="winfo">
-            <div class="wlbl" id="w-origin-lbl">Origin</div>
-            <div class="wval" id="w-origin-val">—</div>
-            <div class="wdetail" id="w-origin-detail">—</div>
-          </div>
-          <div class="wbadge bloading" id="w-origin-badge">—</div>
-        </div>
-        <div class="wrow">
-          <div class="wflag">🌊</div>
-          <div class="winfo">
-            <div class="wlbl">Transit route (mid-ocean)</div>
-            <div class="wval" id="w-transit-val">—</div>
-            <div class="wdetail" id="w-transit-detail">—</div>
-          </div>
-          <div class="wbadge bloading" id="w-transit-badge">—</div>
-        </div>
-        <div class="wrow">
-          <div class="wflag">🇳🇱</div>
-          <div class="winfo">
-            <div class="wlbl">Netherlands (Rotterdam)</div>
-            <div class="wval" id="w-nl-val">—</div>
-            <div class="wdetail" id="w-nl-detail">—</div>
-          </div>
-          <div class="wbadge bloading" id="w-nl-badge">—</div>
-        </div>
-        <div class="wrow">
-          <div class="wflag">🇧🇪</div>
-          <div class="winfo">
-            <div class="wlbl">Belgium (Antwerp)</div>
-            <div class="wval" id="w-be-val">—</div>
-            <div class="wdetail" id="w-be-detail">—</div>
-          </div>
-          <div class="wbadge bloading" id="w-be-badge">—</div>
-        </div>
-      </div>
-      <button class="refresh-btn" id="refresh-btn" onclick="runAnalysis()">↻ Refresh &amp; Re-analyse</button>
-      <div class="last-upd" id="last-upd"></div>
-    </div>
+    <div class="report-body">
 
-    <!-- ADVICE PAGE -->
-    <div class="page" id="page-advice">
-      <div class="ai-loader" id="ai-loader">
-        <span class="ai-spinner">🧠</span>
-        <div class="ai-loader-text">Analysing all weather factors...</div>
+      <!-- Loading -->
+      <div class="loading-state" id="loading-state">
+        <span class="loading-spinner">🧠</span>
+        <div class="loading-text" id="loading-text">Fetching live weather data...</div>
       </div>
-      <div class="empty-state" id="advice-empty">
-        <div class="empty-emoji">🍌</div>
-        <div class="empty-title">No advice yet</div>
-        <div class="empty-sub">Go to Setup, select your origin and programme, then tap Analyse.</div>
-      </div>
-      <div id="advice-content" style="display:none;flex-direction:column;gap:14px">
-        <div class="sel-summary">
-          <div class="sel-item"><div class="sel-lbl">Origin</div><div class="sel-val" id="sum-origin">—</div></div>
-          <div class="sel-divider"></div>
-          <div class="sel-item"><div class="sel-lbl">Programme</div><div class="sel-val" id="sum-prog">—</div></div>
-          <div class="sel-divider"></div>
-          <div class="sel-item"><div class="sel-lbl">Updated</div><div class="sel-val" id="sum-time">—</div></div>
+
+      <!-- Error -->
+      <div class="err-box" id="err-box"></div>
+
+      <!-- Weather -->
+      <div id="section-weather" style="display:none">
+        <div class="sec-title">Live Weather Conditions</div>
+        <div class="weather-box">
+          <div class="weather-box-hdr">
+            <div class="weather-box-title">All locations</div>
+            <div style="font-size:9px;color:var(--lime);font-weight:700" id="w-status">—</div>
+          </div>
+          <div class="wrow">
+            <div class="wflag" id="w-flag">🌍</div>
+            <div class="winfo">
+              <div class="wlbl" id="w-origin-lbl">Origin</div>
+              <div class="wval" id="w-origin-val">—</div>
+              <div class="wdetail" id="w-origin-detail">—</div>
+            </div>
+            <div class="wbadge bok" id="w-origin-badge">—</div>
+          </div>
+          <div class="wrow">
+            <div class="wflag">🌊</div>
+            <div class="winfo">
+              <div class="wlbl">Transit route (mid-ocean)</div>
+              <div class="wval" id="w-transit-val">—</div>
+              <div class="wdetail" id="w-transit-detail">—</div>
+            </div>
+            <div class="wbadge bok" id="w-transit-badge">—</div>
+          </div>
+          <div class="wrow">
+            <div class="wflag">🇳🇱</div>
+            <div class="winfo">
+              <div class="wlbl">Netherlands · Rotterdam</div>
+              <div class="wval" id="w-nl-val">—</div>
+              <div class="wdetail" id="w-nl-detail">—</div>
+            </div>
+            <div class="wbadge bok" id="w-nl-badge">—</div>
+          </div>
+          <div class="wrow">
+            <div class="wflag">🇧🇪</div>
+            <div class="winfo">
+              <div class="wlbl">Belgium · Antwerp</div>
+              <div class="wval" id="w-be-val">—</div>
+              <div class="wdetail" id="w-be-detail">—</div>
+            </div>
+            <div class="wbadge bok" id="w-be-badge">—</div>
+          </div>
         </div>
+      </div>
+
+      <!-- Advice -->
+      <div id="section-advice" style="display:none">
+        <div class="sec-title">Ripening Advice</div>
         <div class="advice-card" id="advice-card">
           <div class="advice-hdr">
-            <div class="advice-icon" id="a-icon">⏳</div>
+            <div class="advice-icon" id="a-icon">🍌</div>
             <div>
-              <div class="advice-rlbl">Ripening Risk</div>
+              <div class="advice-rlbl">Risk Assessment</div>
               <div class="advice-title" id="a-title">—</div>
             </div>
           </div>
           <div class="advice-text" id="a-text">—</div>
           <div class="temp-grid">
-            <div class="tcrd"><div class="tlbl">Ripening start temp</div><div class="tval green" id="a-start">—</div></div>
-            <div class="tcrd"><div class="tlbl">Storage temp</div><div class="tval" id="a-storage">—</div></div>
-            <div class="tcrd"><div class="tlbl">Shelf adjust</div><div class="tval orange" id="a-shelf">—</div></div>
+            <div class="tcrd">
+              <div class="tlbl">Ripening start temp</div>
+              <div class="tval green" id="a-start">—</div>
+            </div>
+            <div class="tcrd">
+              <div class="tlbl">Storage temp</div>
+              <div class="tval" id="a-storage">—</div>
+            </div>
+            <div class="tcrd">
+              <div class="tlbl">Shelf adjust</div>
+              <div class="tval orange" id="a-shelf">—</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- EVENTS PAGE -->
-    <div class="page" id="page-events">
-      <div class="empty-state" id="events-empty">
-        <div class="empty-emoji">✅</div>
-        <div class="empty-title">No special events</div>
-        <div class="empty-sub">No storms, El Niño, or extreme weather events detected for the current conditions.</div>
-      </div>
-      <div id="events-content" style="display:none">
+      <!-- Events -->
+      <div id="section-events" style="display:none">
+        <div class="sec-title">Special Weather Events</div>
         <div class="events-card">
-          <div class="events-hdr"><span style="font-size:15px">⚠️</span><div class="events-title">Special Weather Events</div></div>
+          <div class="events-hdr"><span style="font-size:15px">⚠️</span><div class="events-title">Active Events</div></div>
           <div id="events-list"></div>
         </div>
       </div>
-    </div>
 
-    <!-- DEFECTS PAGE -->
-    <div class="page" id="page-defects">
-      <div class="empty-state" id="defects-empty">
-        <div class="empty-emoji">🔍</div>
-        <div class="empty-title">No defect analysis yet</div>
-        <div class="empty-sub">Run an analysis first to see weather-based defect risks.</div>
-      </div>
-      <div id="defects-content" style="display:none">
-        <div style="background:rgba(255,140,0,0.04);border:1px solid rgba(255,140,0,0.12);border-radius:11px;padding:11px 14px;font-size:11px;color:rgba(255,160,0,0.8);line-height:1.6;margin-bottom:2px;">Based on current weather at origin, transit, and arrival — inspect carefully for these defects.</div>
+      <!-- Defects -->
+      <div id="section-defects" style="display:none">
+        <div class="sec-title">Defects to Watch</div>
+        <div style="background:rgba(255,140,0,0.04);border:1px solid rgba(255,140,0,0.1);border-radius:11px;padding:11px 14px;font-size:11px;color:rgba(255,160,0,0.75);line-height:1.6;margin-bottom:8px;">Based on current weather at origin, transit and arrival — inspect carefully for the following defects.</div>
         <div class="defects-card">
-          <div class="defects-hdr"><span style="font-size:15px">🔍</span><div class="defects-title">Defects to Watch</div></div>
+          <div class="defects-hdr"><span style="font-size:15px">🔍</span><div class="defects-title">Weather-based Risk</div></div>
           <div id="defects-list"></div>
         </div>
       </div>
+
+      <!-- Refresh -->
+      <div id="section-refresh" style="display:none">
+        <div class="refresh-row">
+          <button class="refresh-btn" id="refresh-btn" onclick="loadReport()">↻ Refresh Report</button>
+          <div class="last-upd" id="last-upd"></div>
+        </div>
+      </div>
+
     </div>
-
   </div>
-</div>
 
+</div>
 <script>
 const GROQ_KEY = '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';
 const MODEL = 'llama-3.3-70b-versatile';
 
-let origin = 'Cameroon', lat = 4.05, lon = 9.70, flag = '🇨🇲', prog = 6;
-let weatherData = null, hasResult = false;
+const ORIGINS = [
+  { name:'Cameroon',    flag:'🇨🇲', lat:4.05,  lon:9.70,   region:'West Africa',          transit:{lat:0,lon:-15} },
+  { name:'Colombia',    flag:'🇨🇴', lat:4.57,  lon:-74.30, region:'South America',         transit:{lat:15,lon:-55} },
+  { name:'Costa Rica',  flag:'🇨🇷', lat:9.93,  lon:-84.09, region:'Central America',       transit:{lat:15,lon:-55} },
+  { name:'Ecuador',     flag:'🇪🇨', lat:-1.83, lon:-78.18, region:'South America',         transit:{lat:15,lon:-55} },
+  { name:'Ghana',       flag:'🇬🇭', lat:7.95,  lon:-1.02,  region:'West Africa',           transit:{lat:0,lon:-15} },
+  { name:'Guatemala',   flag:'🇬🇹', lat:14.64, lon:-90.51, region:'Central America',       transit:{lat:15,lon:-55} },
+  { name:'Ivory Coast', flag:'🇨🇮', lat:5.35,  lon:-4.00,  region:'West Africa',           transit:{lat:0,lon:-15} },
+  { name:'Panama',      flag:'🇵🇦', lat:8.99,  lon:-79.52, region:'Central America',       transit:{lat:15,lon:-55} },
+  { name:'Peru',        flag:'🇵🇪', lat:-9.19, lon:-75.01, region:'South America · Pacific',transit:{lat:5,lon:-40} }
+];
 
-const transitCoords = {
-  Cameroon:{lat:0,lon:-15}, Colombia:{lat:15,lon:-55}, 'Costa Rica':{lat:15,lon:-55},
-  Ecuador:{lat:15,lon:-55}, Ghana:{lat:0,lon:-15}, Guatemala:{lat:15,lon:-55},
-  'Ivory Coast':{lat:0,lon:-15}, Panama:{lat:15,lon:-55}, Peru:{lat:5,lon:-40}
-};
+let currentOrigin = null;
+let currentProg = 6;
+let lastWeather = null;
 
-function showTab(id) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  document.getElementById('page-' + id).classList.add('active');
+// Build origin list
+const container = document.getElementById('origins-container');
+ORIGINS.forEach(o => {
+  container.innerHTML += `
+    <div class="origin-card" onclick="openOrigin('${o.name}')">
+      <div class="origin-flag">${o.flag}</div>
+      <div class="origin-info">
+        <div class="origin-name">${o.name}</div>
+        <div class="origin-meta">${o.region} · Tap for full report</div>
+      </div>
+      <div class="origin-arrow">›</div>
+    </div>`;
+});
+
+function openOrigin(name) {
+  currentOrigin = ORIGINS.find(o => o.name === name);
+  currentProg = 6;
+  // Reset programme buttons
+  document.querySelectorAll('.prog-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('prog-6').classList.add('active');
+  // Update header
+  document.getElementById('hdr-title').innerText = currentOrigin.name;
+  document.getElementById('hdr-sub').innerText = 'Full ripening report';
+  document.getElementById('back-btn').style.display = 'flex';
+  // Update hero
+  document.getElementById('r-flag').innerText = currentOrigin.flag;
+  document.getElementById('r-name').innerText = currentOrigin.name;
+  document.getElementById('r-sub').innerText = currentOrigin.region + ' · ' + new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  // Show report page
+  document.getElementById('origin-list-page').style.display = 'none';
+  document.getElementById('report-page').style.display = 'block';
+  window.scrollTo(0,0);
+  loadReport();
 }
 
-function selectOrigin(el, name, lt, ln, fl) {
-  document.querySelectorAll('.obtn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  origin = name; lat = lt; lon = ln; flag = fl;
+function showOriginList() {
+  document.getElementById('report-page').style.display = 'none';
+  document.getElementById('origin-list-page').style.display = 'block';
+  document.getElementById('back-btn').style.display = 'none';
+  document.getElementById('hdr-title').innerText = 'Ripening Advice';
+  document.getElementById('hdr-sub').innerText = 'Select an origin to begin';
+  window.scrollTo(0,0);
 }
 
-function selectProg(el, p) {
-  document.querySelectorAll('.pbtn').forEach(b => b.classList.remove('active'));
+function changeProg(el, p) {
+  document.querySelectorAll('.prog-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  prog = p;
+  currentProg = p;
+  if (lastWeather) {
+    // Re-ask AI with same weather but new programme
+    showLoading('Re-analysing for ' + p + '-day programme...');
+    hideResults();
+    askGroq(lastWeather).then(r => { applyResult(r); showResults(); }).catch(e => showError(e.message));
+  }
 }
 
 function wmoDesc(code) {
-  if (code === 0) return 'Clear sky';
-  if (code <= 3) return 'Partly cloudy';
-  if (code <= 9) return 'Fog';
-  if (code <= 29) return 'Drizzle / light rain';
-  if (code <= 49) return 'Fog';
-  if (code <= 69) return 'Rain';
-  if (code <= 79) return 'Snow / sleet';
-  if (code <= 84) return 'Rain showers';
-  if (code <= 99) return 'Thunderstorm';
+  if (code===0) return 'Clear sky';
+  if (code<=3) return 'Partly cloudy';
+  if (code<=9) return 'Fog';
+  if (code<=29) return 'Light rain / drizzle';
+  if (code<=49) return 'Foggy';
+  if (code<=69) return 'Rain';
+  if (code<=79) return 'Snow / sleet';
+  if (code<=84) return 'Rain showers';
+  if (code<=99) return 'Thunderstorm';
   return 'Variable';
 }
 
-async function getWeather(lt, ln) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lt}&longitude=${ln}&current=temperature_2m,relative_humidity_2m,weathercode,windspeed_10m,precipitation&timezone=auto`;
+async function getWeather(lat, lon) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weathercode,windspeed_10m,precipitation&timezone=auto`;
   const r = await fetch(url);
   const d = await r.json();
   return {
@@ -386,92 +400,146 @@ async function getWeather(lt, ln) {
 }
 
 function badge(temp, humidity, type) {
-  if (type === 'origin') {
-    if (temp >= 30 || humidity >= 85) return ['bbad', 'High stress'];
-    if (temp >= 27 || humidity >= 75) return ['bwarn', 'Moderate'];
-    return ['bok', 'Normal'];
+  if (type==='origin') {
+    if (temp>=30||humidity>=85) return ['bbad','High stress'];
+    if (temp>=27||humidity>=75) return ['bwarn','Moderate'];
+    return ['bok','Normal'];
   }
-  if (type === 'transit') {
-    if (temp >= 27 || humidity >= 85) return ['bwarn', 'Elevated'];
-    return ['bok', 'Normal'];
+  if (type==='transit') {
+    if (temp>=27) return ['bwarn','Elevated'];
+    return ['bok','Normal'];
   }
-  return (temp >= 20) ? ['bwarn', 'Warm'] : ['bok', 'Normal'];
+  if (temp>=20) return ['bwarn','Warm'];
+  return ['bok','Normal'];
 }
 
 async function askGroq(w) {
   const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-
-  // Key temperature ranges per programme:
-  // 5-day (fast): start 18-22°C (higher = faster ripening)
-  // 6-day (standard): start 16-19°C
-  // 7-day (slow): start 14-17°C (lower = slower ripening)
-  // Then adjust ±1-2°C based on weather stress
-
-  const prompt = `You are a professional banana ripening specialist advising fruit importers in the Netherlands and Belgium.
+  const prompt = `You are a professional banana ripening expert advising fruit importers in the Netherlands and Belgium.
 
 TODAY: ${today}
-ORIGIN: ${origin}
-PROGRAMME: ${prog}-day ripening programme
+ORIGIN: ${currentOrigin.name} (${currentOrigin.region})
+RIPENING PROGRAMME: ${currentProg}-day
 
-TEMPERATURE RULE (CRITICAL):
-- 5-day programme (fast): base start temp 20-22°C (higher temp = faster ripening)
-- 6-day programme (standard): base start temp 17-19°C
-- 7-day programme (slow): base start temp 14-16°C (lower temp = slower ripening)
-- Then adjust the base temp based on weather stress: if fruit is stressed/hot origin → reduce start temp by 1-2°C; if cool/calm → increase by 0.5-1°C
-- Storage temp after ripening is always 13-14°C regardless of programme
+TEMPERATURE RULES (STRICTLY FOLLOW):
+- 5-day programme (fast ripening): base start temp 20–22°C — higher temp speeds up the process
+- 6-day programme (standard): base start temp 17–19°C
+- 7-day programme (slow ripening): base start temp 14–16°C — lower temp slows the process
+- Adjust base temp based on stress: stressed/hot origin → reduce by 1–2°C; cool/calm → increase by 0.5–1°C
+- Storage temp after ripening: always 13–14°C regardless of programme
 
-LIVE WEATHER DATA:
-Origin (${origin}): ${w.origin.temp}°C, ${w.origin.humidity}% humidity, ${w.origin.desc}, wind ${w.origin.wind} km/h, precipitation ${w.origin.precip}mm
-Transit (mid-ocean, ~4 week journey): ${w.transit.temp}°C, ${w.transit.humidity}% humidity, ${w.transit.desc}, wind ${w.transit.wind} km/h
-Netherlands Rotterdam: ${w.nl.temp}°C, ${w.nl.humidity}% humidity, ${w.nl.desc}
-Belgium Antwerp: ${w.be.temp}°C, ${w.be.humidity}% humidity, ${w.be.desc}
+LIVE WEATHER:
+- ${currentOrigin.name} origin: ${w.origin.temp}°C, ${w.origin.humidity}% RH, ${w.origin.desc}, wind ${w.origin.wind} km/h, precip ${w.origin.precip}mm
+- Transit (mid-ocean, ~4 weeks journey): ${w.transit.temp}°C, ${w.transit.humidity}% RH, ${w.transit.desc}, wind ${w.transit.wind} km/h
+- Netherlands Rotterdam: ${w.nl.temp}°C, ${w.nl.humidity}% RH, ${w.nl.desc}
+- Belgium Antwerp: ${w.be.temp}°C, ${w.be.humidity}% RH, ${w.be.desc}
 
-Consider ALL of these factors in your analysis:
-1. Origin heat and humidity stress (pre-harvest stress)
-2. Transit conditions (sea temperature, storms, rough weather)
-3. Arrival climate in NL/BE (warehouse temperature effect)
-4. Seasonal patterns (is this El Niño or La Niña season based on Pacific temps?)
-5. Storm risk (high wind speeds, thunderstorm codes, heavy precipitation)
-6. Extreme heat events (temps above 32°C at origin)
-7. Cold stress risk (temps below 14°C during transit = chilling injury)
-8. Humidity-related disease pressure at origin
+ANALYSIS FACTORS (consider ALL):
+1. Pre-harvest heat and humidity stress at origin
+2. Storm risk: thunderstorm codes (80–99), high winds (>40 km/h), heavy precipitation
+3. El Niño / La Niña: Pacific sea surface temps — El Niño = warmer/drier origins in Africa, wetter in Americas; La Niña = opposite
+4. Chilling injury risk: transit temps below 14°C
+5. Extreme heat event: origin above 35°C
+6. Transit sea conditions: rough seas, warm water, storm systems
+7. Arrival warehouse climate: warm NL/BE = accelerates ripening on arrival
+8. Humidity-related disease pressure: RH above 85% at origin = crown rot, anthracnose risk
+9. Seasonal patterns for ${currentOrigin.region}
+10. Combined effect of all factors on final ripening speed
 
-Return ONLY valid JSON (no markdown, no extra text):
+Return ONLY valid JSON (no markdown, no backticks, no extra text):
 {
   "title": "4-6 word risk summary",
   "startTemp": "XX.X°C",
   "storageTemp": "13.5°C",
-  "shelfAdj": "e.g. None / -1 day / -2 days / +1 day",
-  "advice": "4-5 sentences of detailed practical advice for the ripening team covering start temp reasoning, what to watch for, and any special actions needed",
-  "icon": "one of: ✓ ⚡ ⚠️ ❄️ 🌿 🔥",
-  "risk": "one of: normal / fast / veryfast / slow / veryslow",
+  "shelfAdj": "None or -1 day or -2 days or +1 day etc",
+  "advice": "4-5 sentences of detailed practical advice for the ripening room team: explain the start temp chosen, what combination of factors led to this, what to monitor during the programme, and any special actions needed",
+  "icon": "one emoji from: ✓ ⚡ ⚠️ ❄️ 🌿 🔥",
+  "risk": "normal or fast or veryfast or slow or veryslow",
   "events": [
     {
-      "name": "event name e.g. El Niño Conditions / Tropical Storm Risk / Extreme Heat Event / La Niña Cooling / Heavy Rainfall Alert / Chilling Injury Risk",
-      "icon": "relevant emoji",
-      "desc": "2-3 sentences: what is happening, why it matters for banana quality, what action to take"
+      "name": "specific event name",
+      "icon": "emoji",
+      "desc": "2-3 sentences: what is happening right now, what caused it, and exactly what the team should do about it for banana quality"
     }
   ],
   "defects": [
     {
       "name": "defect name",
-      "icon": "relevant emoji",
-      "desc": "2 sentences: what to look for and exactly why current weather causes this defect",
-      "risk": "high / medium / low"
+      "icon": "emoji",
+      "desc": "2 sentences: what to look for visually and exactly why current weather conditions cause this specific defect",
+      "risk": "high or medium or low"
     }
   ]
 }
 
-Include 3-6 defects and 0-4 events. Events array can be empty if no special conditions detected. Be specific with temperatures and actionable with advice.`;
+events array: include 0–5 real detected events. Empty array if none.
+defects array: include 4–6 most relevant defects based on actual current conditions.`;
 
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json','Authorization':`Bearer ${GROQ_KEY}`},
-    body: JSON.stringify({model:MODEL, max_tokens:1200, temperature:0.2, messages:[{role:'user',content:prompt}]})
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${GROQ_KEY}`},
+    body:JSON.stringify({model:MODEL,max_tokens:1400,temperature:0.2,messages:[{role:'user',content:prompt}]})
   });
   const d = await r.json();
   const raw = d.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
   return JSON.parse(raw);
+}
+
+function showLoading(text) {
+  document.getElementById('loading-text').innerText = text || 'Fetching live weather data...';
+  document.getElementById('loading-state').style.display = 'flex';
+  document.getElementById('err-box').style.display = 'none';
+}
+
+function hideLoading() {
+  document.getElementById('loading-state').style.display = 'none';
+}
+
+function showError(msg) {
+  hideLoading();
+  document.getElementById('err-box').style.display = 'block';
+  document.getElementById('err-box').innerText = 'Error: ' + (msg || 'Could not load report. Check your connection and try again.');
+}
+
+function hideResults() {
+  ['section-weather','section-advice','section-events','section-defects','section-refresh'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+}
+
+function showResults() {
+  hideLoading();
+  ['section-weather','section-advice','section-defects','section-refresh'].forEach(id => {
+    document.getElementById(id).style.display = 'block';
+  });
+}
+
+function applyWeather(w) {
+  const o = currentOrigin;
+  document.getElementById('w-flag').innerText = o.flag;
+  document.getElementById('w-origin-lbl').innerText = o.name + ' origin';
+  document.getElementById('w-origin-val').innerText = `${w.origin.temp}°C · ${w.origin.humidity}% humidity · ${w.origin.precip}mm rain`;
+  document.getElementById('w-origin-detail').innerText = `${w.origin.desc} · Wind ${w.origin.wind} km/h`;
+  document.getElementById('w-transit-val').innerText = `${w.transit.temp}°C · ${w.transit.humidity}% humidity`;
+  document.getElementById('w-transit-detail').innerText = `${w.transit.desc} · Wind ${w.transit.wind} km/h`;
+  document.getElementById('w-nl-val').innerText = `${w.nl.temp}°C · ${w.nl.humidity}% humidity`;
+  document.getElementById('w-nl-detail').innerText = w.nl.desc;
+  document.getElementById('w-be-val').innerText = `${w.be.temp}°C · ${w.be.humidity}% humidity`;
+  document.getElementById('w-be-detail').innerText = w.be.desc;
+
+  const [ob,ol] = badge(w.origin.temp, w.origin.humidity, 'origin');
+  const [tb,tl] = badge(w.transit.temp, w.transit.humidity, 'transit');
+  const [nb,nl] = badge(w.nl.temp, w.nl.humidity, 'arrival');
+  const [bb,bl] = badge(w.be.temp, w.be.humidity, 'arrival');
+  const bids = ['w-origin-badge','w-transit-badge','w-nl-badge','w-be-badge'];
+  const bclasses = [ob,tb,nb,bb];
+  const blabels = [ol,tl,nl,bl];
+  bids.forEach((id,i) => {
+    document.getElementById(id).className = 'wbadge ' + bclasses[i];
+    document.getElementById(id).innerText = blabels[i];
+  });
+  document.getElementById('w-status').innerText = '✓ Live';
+  document.getElementById('section-weather').style.display = 'block';
 }
 
 function applyResult(res) {
@@ -480,7 +548,7 @@ function applyResult(res) {
     fast:     {bg:'rgba(255,140,0,0.05)',   bc:'rgba(255,140,0,0.2)'},
     veryfast: {bg:'rgba(255,80,80,0.05)',   bc:'rgba(255,80,80,0.2)'},
     slow:     {bg:'rgba(74,158,255,0.04)',  bc:'rgba(74,158,255,0.2)'},
-    veryslow: {bg:'rgba(74,158,255,0.06)',  bc:'rgba(74,158,255,0.28)'}
+    veryslow: {bg:'rgba(74,158,255,0.07)',  bc:'rgba(74,158,255,0.28)'}
   };
   const c = colors[res.risk] || colors.normal;
   const card = document.getElementById('advice-card');
@@ -492,123 +560,59 @@ function applyResult(res) {
   document.getElementById('a-storage').innerText = res.storageTemp;
   document.getElementById('a-shelf').innerText = res.shelfAdj;
 
-  const now = new Date();
-  document.getElementById('sum-origin').innerText = flag + ' ' + origin;
-  document.getElementById('sum-prog').innerText = prog + ' days';
-  document.getElementById('sum-time').innerText = now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-
   // Events
-  const evBadge = document.getElementById('events-badge');
+  const secEvents = document.getElementById('section-events');
   if (res.events && res.events.length > 0) {
-    evBadge.style.display = 'inline-flex';
-    evBadge.innerText = res.events.length;
-    document.getElementById('events-empty').style.display = 'none';
-    document.getElementById('events-content').style.display = 'block';
+    secEvents.style.display = 'block';
     document.getElementById('events-list').innerHTML = res.events.map(e => `
       <div class="erow">
         <div class="eicon">${e.icon}</div>
-        <div>
-          <div class="ename">${e.name}</div>
-          <div class="edesc">${e.desc}</div>
-        </div>
+        <div><div class="ename">${e.name}</div><div class="edesc">${e.desc}</div></div>
       </div>`).join('');
   } else {
-    evBadge.style.display = 'none';
-    document.getElementById('events-empty').style.display = 'flex';
-    document.getElementById('events-content').style.display = 'none';
+    secEvents.style.display = 'none';
   }
 
   // Defects
   if (res.defects && res.defects.length > 0) {
-    document.getElementById('defects-empty').style.display = 'none';
-    document.getElementById('defects-content').style.display = 'block';
     document.getElementById('defects-list').innerHTML = res.defects.map(d => `
       <div class="drow">
         <div class="dicon">${d.icon}</div>
-        <div class="dinfo">
-          <div class="dname">${d.name}</div>
-          <div class="ddesc">${d.desc}</div>
-        </div>
+        <div class="dinfo"><div class="dname">${d.name}</div><div class="ddesc">${d.desc}</div></div>
         <div class="drisk r${d.risk}">${d.risk}</div>
       </div>`).join('');
   }
+
+  const now = new Date();
+  document.getElementById('last-upd').innerText = `Updated ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
 }
 
-async function runAnalysis() {
-  const btn = document.getElementById('analyse-btn');
-  const refBtn = document.getElementById('refresh-btn');
-  btn.disabled = true; btn.innerText = '⏳ Fetching weather...';
-  refBtn.disabled = true;
-  document.getElementById('err-setup').style.display = 'none';
+async function loadReport() {
+  if (!currentOrigin) return;
+  document.getElementById('refresh-btn').disabled = true;
+  showLoading('Fetching live weather data...');
+  hideResults();
 
   try {
-    const tc = transitCoords[origin] || {lat:15,lon:-45};
     const [o, t, nl, be] = await Promise.all([
-      getWeather(lat, lon),
-      getWeather(tc.lat, tc.lon),
+      getWeather(currentOrigin.lat, currentOrigin.lon),
+      getWeather(currentOrigin.transit.lat, currentOrigin.transit.lon),
       getWeather(51.92, 4.48),
       getWeather(51.22, 4.40)
     ]);
-    weatherData = {origin:o, transit:t, nl, be};
+    lastWeather = {origin:o, transit:t, nl, be};
+    applyWeather(lastWeather);
 
-    // Update weather tab
-    document.getElementById('w-flag').innerText = flag;
-    document.getElementById('w-origin-lbl').innerText = origin + ' origin';
-    document.getElementById('w-origin-val').innerText = `${o.temp}°C · ${o.humidity}% humidity · ${o.precip}mm rain`;
-    document.getElementById('w-origin-detail').innerText = `${o.desc} · Wind ${o.wind} km/h`;
-    document.getElementById('w-transit-val').innerText = `${t.temp}°C · ${t.humidity}% humidity`;
-    document.getElementById('w-transit-detail').innerText = `${t.desc} · Wind ${t.wind} km/h`;
-    document.getElementById('w-nl-val').innerText = `${nl.temp}°C · ${nl.humidity}% humidity`;
-    document.getElementById('w-nl-detail').innerText = nl.desc;
-    document.getElementById('w-be-val').innerText = `${be.temp}°C · ${be.humidity}% humidity`;
-    document.getElementById('w-be-detail').innerText = be.desc;
-
-    const [ob,ol] = badge(o.temp, o.humidity, 'origin');
-    const [tb,tl] = badge(t.temp, t.humidity, 'transit');
-    const [nb,nl2] = badge(nl.temp, nl.humidity, 'arrival');
-    const [bb,bl] = badge(be.temp, be.humidity, 'arrival');
-    ['origin','transit','nl','be'].forEach((k,i) => {
-      const el = document.getElementById(`w-${k}-badge`);
-      el.className = 'wbadge ' + [ob,tb,nb,bb][i];
-      el.innerText = [ol,tl,nl2,bl][i];
-    });
-
-    document.getElementById('wstat').innerText = '✓ Live';
-    document.getElementById('last-upd').innerText = `Updated ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
-
-    // Show advice tab and loader
-    btn.innerText = '🧠 Analysing with AI...';
-    document.getElementById('advice-empty').style.display = 'none';
-    document.getElementById('advice-content').style.display = 'none';
-    document.getElementById('ai-loader').style.display = 'flex';
-
-    // Switch to advice tab
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelector('.tab[onclick="showTab(\'advice\')"]').classList.add('active');
-    document.getElementById('page-advice').classList.add('active');
-
-    const result = await askGroq(weatherData);
-    document.getElementById('ai-loader').style.display = 'none';
-    document.getElementById('advice-content').style.display = 'flex';
+    document.getElementById('loading-text').innerText = 'Analysing with AI...';
+    const result = await askGroq(lastWeather);
     applyResult(result);
-    hasResult = true;
+    showResults();
 
   } catch(e) {
     console.error(e);
-    document.getElementById('ai-loader').style.display = 'none';
-    document.getElementById('advice-empty').style.display = 'flex';
-    document.getElementById('err-setup').style.display = 'block';
-    document.getElementById('err-setup').innerText = 'Error: ' + (e.message || 'Could not complete analysis. Check connection and try again.');
-    // Go back to setup
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelector('.tab[onclick="showTab(\'setup\')"]').classList.add('active');
-    document.getElementById('page-setup').classList.add('active');
+    showError(e.message);
   }
-
-  btn.disabled = false; btn.innerText = '🧠 Analyse & Get Advice';
-  refBtn.disabled = false;
+  document.getElementById('refresh-btn').disabled = false;
 }
 </script>
 </body>
