@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulp Pro — Ripening Advice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --lime: #a6e22e;
+  --lime-dim: rgba(166,226,46,0.08);
+  --lime-border: rgba(166,226,46,0.2);
+  --blue: #4a9eff;
+  --blue-dim: rgba(74,158,255,0.08);
+  --blue-border: rgba(74,158,255,0.2);
+  --amber: #ff8c00;
+  --red: rgba(255,80,80,1);
+  --bg: #030303;
+  --bg2: #0a0a0a;
+  --border: rgba(255,255,255,0.07);
+  --text: #ffffff;
+  --text-secondary: rgba(255,255,255,0.65);
+  --text-dim: rgba(255,255,255,0.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;padding-bottom:60px}
+
+.header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(3,3,3,0.95);backdrop-filter:blur(20px);z-index:10}
+.header-icon{width:34px;height:34px;background:var(--lime);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.header-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.3px}
+.header-sub{font-size:10px;color:var(--text-dim);margin-top:1px}
+.live-badge{display:flex;align-items:center;gap:5px;background:var(--blue-dim);border:1px solid var(--blue-border);border-radius:100px;padding:5px 12px;font-size:9px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+.body{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+.section-lbl{font-size:9px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+
+.origin-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.origin-btn{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 10px;font-size:12px;font-weight:600;color:var(--text-dim);text-align:center;cursor:pointer;transition:all 0.2s}
+.origin-btn:hover{border-color:rgba(74,158,255,0.3);color:var(--text-secondary)}
+.origin-btn.active{background:var(--blue-dim);border-color:rgba(74,158,255,0.4);color:var(--blue);font-weight:700}
+
+.prog-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.prog-btn{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 6px;font-family:'Syne',sans-serif;font-size:22px;font-weight:900;color:var(--text-dim);text-align:center;cursor:pointer;transition:all 0.2s;line-height:1}
+.prog-btn span{display:block;font-family:'Inter',sans-serif;font-size:8px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px}
+.prog-btn.active{background:var(--lime-dim);border-color:var(--lime-border);color:var(--lime)}
+.prog-btn.active span{color:rgba(166,226,46,0.5)}
+
+.weather-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.weather-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.weather-header-title{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px}
+.weather-status{font-size:10px;color:var(--text-dim);font-weight:600}
+.w-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.w-row:last-child{border-bottom:none}
+.w-flag{font-size:20px;flex-shrink:0;width:26px;text-align:center}
+.w-info{flex:1}
+.w-label{font-size:10px;font-weight:600;color:var(--text-dim);margin-bottom:2px}
+.w-val{font-size:13px;font-weight:700;color:var(--text)}
+.w-detail{font-size:10px;color:var(--text-dim);margin-top:1px}
+.w-badge{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;padding:4px 10px;border-radius:20px;flex-shrink:0;white-space:nowrap}
+.badge-ok{background:rgba(166,226,46,0.08);color:var(--lime);border:1px solid rgba(166,226,46,0.2)}
+.badge-warn{background:rgba(255,140,0,0.1);color:var(--amber);border:1px solid rgba(255,140,0,0.2)}
+.badge-bad{background:rgba(255,80,80,0.1);color:var(--red);border:1px solid rgba(255,80,80,0.2)}
+.badge-loading{background:rgba(255,255,255,0.04);color:var(--text-dim);border:1px solid var(--border)}
+
+.advice-card{border-radius:16px;padding:18px;border:1px solid var(--lime-border);background:rgba(166,226,46,0.04);transition:all 0.4s ease}
+.advice-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.advice-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;background:rgba(255,255,255,0.05)}
+.advice-risk-lbl{font-size:8px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px}
+.advice-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:900;color:var(--text);letter-spacing:-0.5px}
+.advice-text{font-size:12px;color:var(--text-secondary);line-height:1.75;margin-bottom:16px}
+
+.temp-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.temp-card{background:rgba(0,0,0,0.4);border-radius:12px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,0.05)}
+.temp-lbl{font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;line-height:1.4}
+.temp-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:900;color:var(--text)}
+.temp-val.start{color:var(--lime)}
+.temp-val.adjust{color:var(--amber)}
+
+.ai-loading{text-align:center;padding:20px;font-size:12px;color:var(--text-dim);display:none}
+.ai-loading .spinner{font-size:24px;animation:spin 1s linear infinite;display:block;margin-bottom:8px}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.refresh-btn{width:100%;background:transparent;border:1px solid var(--blue-border);border-radius:100px;padding:13px;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
+.refresh-btn:hover{background:var(--blue-dim)}
+.refresh-btn:disabled{opacity:0.4;cursor:not-allowed}
+.last-updated{text-align:center;font-size:10px;color:var(--text-dim)}
+.error-box{background:rgba(255,80,80,0.06);border:1px solid rgba(255,80,80,0.15);border-radius:12px;padding:14px 16px;font-size:12px;color:rgba(255,120,120,0.9);line-height:1.6;display:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="header-icon">🍌</div>
+      <div>
+        <div class="header-title">Ripening Advice</div>
+        <div class="header-sub">Live weather · AI powered</div>
+      </div>
+    </div>
+    <div class="live-badge"><div class="live-dot"></div>Live</div>
+  </div>
+
+  <div class="body">
+
+    <div>
+      <div class="section-lbl">Select Origin</div>
+      <div class="origin-grid" id="origins">
+        <div class="origin-btn active" onclick="selectOrigin(this,'Ecuador',-1.83,-78.18,'🇪🇨')">🇪🇨 Ecuador</div>
+        <div class="origin-btn" onclick="selectOrigin(this,'Colombia',4.57,-74.30,'🇨🇴')">🇨🇴 Colombia</div>
+        <div class="origin-btn" onclick="selectOrigin(this,'Costa Rica',9.93,-84.09,'🇨🇷')">🇨🇷 Costa Rica</div>
+        <div class="origin-btn" onclick="selectOrigin(this,'Guatemala',14.64,-90.51,'🇬🇹')">🇬🇹 Guatemala</div>
+        <div class="origin-btn" onclick="selectOrigin(this,'Cameroon',4.05,9.70,'🇨🇲')">🇨🇲 Cameroon</div>
+        <div class="origin-btn" onclick="selectOrigin(this,'Ivory Coast',5.35,-4.00,'🇨🇮')">🇨🇮 Ivory Coast</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-lbl">Ripening Programme</div>
+      <div class="prog-grid">
+        <div class="prog-btn" onclick="selectProg(this,5)">5<span>days · Fast</span></div>
+        <div class="prog-btn active" onclick="selectProg(this,6)">6<span>days · Standard</span></div>
+        <div class="prog-btn" onclick="selectProg(this,7)">7<span>days · Slow</span></div>
+      </div>
+    </div>
+
+    <div class="weather-card">
+      <div class="weather-header">
+        <div class="weather-header-title">Weather conditions</div>
+        <div class="weather-status" id="weather-status">Loading...</div>
+      </div>
+      <div class="w-row">
+        <div class="w-flag" id="origin-flag">🌍</div>
+        <div class="w-info">
+          <div class="w-label" id="origin-w-label">Origin</div>
+          <div class="w-val" id="origin-temp">—</div>
+          <div class="w-detail" id="origin-detail">Fetching...</div>
+        </div>
+        <div class="w-badge badge-loading" id="origin-badge">—</div>
+      </div>
+      <div class="w-row">
+        <div class="w-flag">🌊</div>
+        <div class="w-info">
+          <div class="w-label">Atlantic transit route</div>
+          <div class="w-val" id="transit-temp">—</div>
+          <div class="w-detail" id="transit-detail">Mid-Atlantic conditions</div>
+        </div>
+        <div class="w-badge badge-loading" id="transit-badge">—</div>
+      </div>
+      <div class="w-row">
+        <div class="w-flag">🇳🇱</div>
+        <div class="w-info">
+          <div class="w-label">Netherlands (Rotterdam)</div>
+          <div class="w-val" id="nl-temp">—</div>
+          <div class="w-detail" id="nl-detail">Fetching...</div>
+        </div>
+        <div class="w-badge badge-loading" id="nl-badge">—</div>
+      </div>
+      <div class="w-row">
+        <div class="w-flag">🇧🇪</div>
+        <div class="w-info">
+          <div class="w-label">Belgium (Antwerp)</div>
+          <div class="w-val" id="be-temp">—</div>
+          <div class="w-detail" id="be-detail">Fetching...</div>
+        </div>
+        <div class="w-badge badge-loading" id="be-badge">—</div>
+      </div>
+    </div>
+
+    <div class="ai-loading" id="ai-loading">
+      <span class="spinner">⏳</span>
+      Analysing weather data...
+    </div>
+
+    <div class="advice-card" id="advice-card">
+      <div class="advice-header">
+        <div class="advice-icon" id="advice-icon">⏳</div>
+        <div>
+          <div class="advice-risk-lbl">Ripening Advice</div>
+          <div class="advice-title" id="advice-title">Calculating...</div>
+        </div>
+      </div>
+      <div class="advice-text" id="advice-text">Fetching live weather data from all locations. Please wait.</div>
+      <div class="temp-grid">
+        <div class="temp-card">
+          <div class="temp-lbl">Ripening start temp</div>
+          <div class="temp-val start" id="start-temp">—</div>
+        </div>
+        <div class="temp-card">
+          <div class="temp-lbl">Storage temp</div>
+          <div class="temp-val" id="storage-temp">—</div>
+        </div>
+        <div class="temp-card">
+          <div class="temp-lbl">Shelf adjust</div>
+          <div class="temp-val adjust" id="shelf-adj">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="error-box" id="error-box"></div>
+
+    <button class="refresh-btn" id="refresh-btn" onclick="fetchAll()">↻ Refresh Weather Data</button>
+    <div class="last-updated" id="last-updated"></div>
+
+  </div>
+</div>
+
+<script>
+const GROQ_API_KEY = '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';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
+
+let currentOrigin = 'Ecuador';
+let currentLat = -1.83;
+let currentLon = -78.18;
+let currentFlag = '🇪🇨';
+let currentProg = 6;
+let lastWeather = null;
+
+function wmoDesc(code) {
+  if (code === 0) return 'Clear sky';
+  if (code <= 3) return 'Partly cloudy';
+  if (code <= 9) return 'Foggy';
+  if (code <= 29) return 'Rain / drizzle';
+  if (code <= 49) return 'Foggy';
+  if (code <= 69) return 'Rain';
+  if (code <= 79) return 'Snow / sleet';
+  if (code <= 84) return 'Showers';
+  if (code <= 99) return 'Thunderstorm';
+  return 'Variable';
+}
+
+async function fetchWeather(lat, lon) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weathercode,windspeed_10m&timezone=auto`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return {
+    temp: Math.round(data.current.temperature_2m),
+    humidity: data.current.relative_humidity_2m,
+    wind: Math.round(data.current.windspeed_10m),
+    desc: wmoDesc(data.current.weathercode)
+  };
+}
+
+function classifyBadge(temp, humidity, type) {
+  if (type === 'origin') {
+    if (temp >= 30 || humidity >= 85) return 'badge-bad';
+    if (temp >= 27 || humidity >= 75) return 'badge-warn';
+    return 'badge-ok';
+  }
+  if (type === 'transit') {
+    if (temp >= 26) return 'badge-warn';
+    return 'badge-ok';
+  }
+  if (type === 'arrival') {
+    if (temp >= 20) return 'badge-warn';
+    return 'badge-ok';
+  }
+}
+
+function badgeLabel(badge) {
+  if (badge === 'badge-bad') return 'High';
+  if (badge === 'badge-warn') return 'Moderate';
+  return 'Normal';
+}
+
+async function askGroq(weather) {
+  const prompt = `You are a professional banana ripening expert advising fruit floor workers in the Netherlands and Belgium.
+
+Today's live weather data:
+- Origin: ${currentOrigin} — ${weather.origin.temp}°C, ${weather.origin.humidity}% humidity, ${weather.origin.desc}, wind ${weather.origin.wind} km/h
+- Atlantic transit route (mid-ocean, ~4 weeks transit): ${weather.transit.temp}°C, ${weather.transit.humidity}% humidity, ${weather.transit.desc}
+- Netherlands (Rotterdam): ${weather.nl.temp}°C, ${weather.nl.humidity}% humidity, ${weather.nl.desc}
+- Belgium (Antwerp): ${weather.be.temp}°C, ${weather.be.humidity}% humidity, ${weather.be.desc}
+
+The fruit was harvested approximately 4 weeks ago from ${currentOrigin} and is arriving now.
+The buyer wants to ripen bananas on a ${currentProg}-day ripening programme.
+
+Based on all weather conditions (origin stress, transit conditions, and arrival warehouse climate), provide:
+1. A risk assessment title (4-6 words max, e.g. "Faster than normal", "Normal ripening expected", "Significantly faster - act now")
+2. A ripening start temperature for a ${currentProg}-day programme (in °C, typically between 14.5°C and 21°C)
+3. A recommended storage/holding temperature after ripening (in °C, typically between 12°C and 14.5°C)
+4. A shelf life adjustment (e.g. "None", "-1 day", "-2 days", "+1 day", "+1-2 days")
+5. A practical advice paragraph (3-4 sentences, plain English, actionable, for a floor worker)
+6. A risk icon emoji (one of: ✓ ⚡ ⚠️ ❄️ 🌿)
+
+Respond ONLY in this exact JSON format, no other text:
+{
+  "title": "...",
+  "startTemp": "XX.X°C",
+  "storageTemp": "XX.X°C",
+  "shelfAdj": "...",
+  "advice": "...",
+  "icon": "...",
+  "risk": "normal|fast|veryfast|slow|veryslow"
+}`;
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${GROQ_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      max_tokens: 400,
+      temperature: 0.3,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  const data = await res.json();
+  const raw = data.choices[0].message.content.trim();
+  const clean = raw.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+function applyAdvice(advice) {
+  const riskColors = {
+    normal:   { bg: 'rgba(166,226,46,0.04)',  border: 'rgba(166,226,46,0.2)' },
+    fast:     { bg: 'rgba(255,140,0,0.05)',   border: 'rgba(255,140,0,0.2)' },
+    veryfast: { bg: 'rgba(255,80,80,0.05)',   border: 'rgba(255,80,80,0.18)' },
+    slow:     { bg: 'rgba(74,158,255,0.04)',  border: 'rgba(74,158,255,0.18)' },
+    veryslow: { bg: 'rgba(74,158,255,0.06)',  border: 'rgba(74,158,255,0.25)' }
+  };
+  const colors = riskColors[advice.risk] || riskColors.normal;
+  const card = document.getElementById('advice-card');
+  card.style.background = colors.bg;
+  card.style.borderColor = colors.border;
+  document.getElementById('advice-icon').innerText = advice.icon;
+  document.getElementById('advice-title').innerText = advice.title;
+  document.getElementById('advice-text').innerText = advice.advice;
+  document.getElementById('start-temp').innerText = advice.startTemp;
+  document.getElementById('storage-temp').innerText = advice.storageTemp;
+  document.getElementById('shelf-adj').innerText = advice.shelfAdj;
+}
+
+async function fetchAll() {
+  const btn = document.getElementById('refresh-btn');
+  btn.disabled = true;
+  btn.innerText = '⏳ Fetching weather...';
+  document.getElementById('error-box').style.display = 'none';
+  document.getElementById('weather-status').innerText = 'Loading...';
+
+  try {
+    const [origin, transit, nl, be] = await Promise.all([
+      fetchWeather(currentLat, currentLon),
+      fetchWeather(20.0, -30.0),
+      fetchWeather(51.92, 4.48),
+      fetchWeather(51.22, 4.40)
+    ]);
+
+    lastWeather = { origin, transit, nl, be };
+
+    // Update weather rows
+    document.getElementById('origin-flag').innerText = currentFlag;
+    document.getElementById('origin-w-label').innerText = currentOrigin + ' origin';
+    document.getElementById('origin-temp').innerText = `${origin.temp}°C · ${origin.humidity}% humidity`;
+    document.getElementById('origin-detail').innerText = origin.desc + ` · Wind ${origin.wind} km/h`;
+
+    document.getElementById('transit-temp').innerText = `${transit.temp}°C · ${transit.humidity}% humidity`;
+    document.getElementById('transit-detail').innerText = transit.desc + ` · Wind ${transit.wind} km/h`;
+
+    document.getElementById('nl-temp').innerText = `${nl.temp}°C · ${nl.humidity}% humidity`;
+    document.getElementById('nl-detail').innerText = nl.desc;
+
+    document.getElementById('be-temp').innerText = `${be.temp}°C · ${be.humidity}% humidity`;
+    document.getElementById('be-detail').innerText = be.desc;
+
+    // Badges
+    const ob = classifyBadge(origin.temp, origin.humidity, 'origin');
+    const tb = classifyBadge(transit.temp, transit.humidity, 'transit');
+    const nb = classifyBadge(nl.temp, nl.humidity, 'arrival');
+    const bb = classifyBadge(be.temp, be.humidity, 'arrival');
+    document.getElementById('origin-badge').className  = 'w-badge ' + ob;
+    document.getElementById('origin-badge').innerText  = badgeLabel(ob);
+    document.getElementById('transit-badge').className = 'w-badge ' + tb;
+    document.getElementById('transit-badge').innerText = badgeLabel(tb);
+    document.getElementById('nl-badge').className      = 'w-badge ' + nb;
+    document.getElementById('nl-badge').innerText      = badgeLabel(nb);
+    document.getElementById('be-badge').className      = 'w-badge ' + bb;
+    document.getElementById('be-badge').innerText      = badgeLabel(bb);
+
+    document.getElementById('weather-status').innerText = '✓ Live';
+
+    // Ask Groq for advice
+    btn.innerText = '🧠 Analysing...';
+    document.getElementById('ai-loading').style.display = 'block';
+    document.getElementById('advice-card').style.opacity = '0.4';
+
+    const advice = await askGroq(lastWeather);
+    document.getElementById('ai-loading').style.display = 'none';
+    document.getElementById('advice-card').style.opacity = '1';
+    applyAdvice(advice);
+
+    const now = new Date();
+    document.getElementById('last-updated').innerText = `Last updated: ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('error-box').style.display = 'block';
+    document.getElementById('error-box').innerText = 'Error: ' + (e.message || 'Could not fetch data. Check your internet connection and try again.');
+    document.getElementById('ai-loading').style.display = 'none';
+    document.getElementById('weather-status').innerText = 'Error';
+  }
+
+  btn.disabled = false;
+  btn.innerText = '↻ Refresh Weather Data';
+}
+
+async function selectOrigin(el, name, lat, lon, flag) {
+  document.querySelectorAll('.origin-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  currentOrigin = name; currentLat = lat; currentLon = lon; currentFlag = flag;
+  await fetchAll();
+}
+
+async function selectProg(el, prog) {
+  document.querySelectorAll('.prog-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  currentProg = prog;
+  if (lastWeather) {
+    document.getElementById('advice-card').style.opacity = '0.4';
+    document.getElementById('ai-loading').style.display = 'block';
+    try {
+      const advice = await askGroq(lastWeather);
+      document.getElementById('ai-loading').style.display = 'none';
+      document.getElementById('advice-card').style.opacity = '1';
+      applyAdvice(advice);
+    } catch(e) {
+      document.getElementById('ai-loading').style.display = 'none';
+      document.getElementById('advice-card').style.opacity = '1';
+    }
+  }
+}
+
+fetchAll();
+</script>
+</body>
+</html>
