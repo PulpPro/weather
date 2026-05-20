@@ -40,7 +40,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .section-lbl{font-size:9px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
 
 .origin-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.origin-btn{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 10px;font-size:12px;font-weight:600;color:var(--text-dim);text-align:center;cursor:pointer;transition:all 0.2s}
+.origin-btn{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:11px 10px;font-size:12px;font-weight:600;color:var(--text-dim);text-align:center;cursor:pointer;transition:all 0.2s}
 .origin-btn:hover{border-color:rgba(74,158,255,0.3);color:var(--text-secondary)}
 .origin-btn.active{background:var(--blue-dim);border-color:rgba(74,158,255,0.4);color:var(--blue);font-weight:700}
 
@@ -81,8 +81,34 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .temp-val.start{color:var(--lime)}
 .temp-val.adjust{color:var(--amber)}
 
+/* Defects section */
+.defects-card{background:var(--bg2);border:1px solid rgba(255,140,0,0.15);border-radius:16px;overflow:hidden}
+.defects-header{padding:12px 16px;border-bottom:1px solid rgba(255,140,0,0.1);display:flex;align-items:center;gap:8px}
+.defects-header-title{font-size:10px;font-weight:700;color:rgba(255,140,0,0.7);text-transform:uppercase;letter-spacing:1.5px}
+.defect-row{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.defect-row:last-child{border-bottom:none}
+.defect-icon{font-size:18px;flex-shrink:0;width:24px;text-align:center;margin-top:1px}
+.defect-info{flex:1}
+.defect-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
+.defect-desc{font-size:11px;color:var(--text-secondary);line-height:1.6}
+.defect-risk{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;padding:3px 8px;border-radius:20px;flex-shrink:0;white-space:nowrap;margin-top:2px}
+.risk-high{background:rgba(255,80,80,0.1);color:var(--red);border:1px solid rgba(255,80,80,0.2)}
+.risk-medium{background:rgba(255,140,0,0.1);color:var(--amber);border:1px solid rgba(255,140,0,0.2)}
+.risk-low{background:rgba(166,226,46,0.08);color:var(--lime);border:1px solid rgba(166,226,46,0.2)}
+
+/* Special events */
+.events-card{background:var(--bg2);border:1px solid rgba(255,80,80,0.15);border-radius:16px;overflow:hidden;display:none}
+.events-header{padding:12px 16px;border-bottom:1px solid rgba(255,80,80,0.1);display:flex;align-items:center;gap:8px}
+.events-header-title{font-size:10px;font-weight:700;color:rgba(255,80,80,0.7);text-transform:uppercase;letter-spacing:1.5px}
+.event-row{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.event-row:last-child{border-bottom:none}
+.event-icon{font-size:20px;flex-shrink:0;width:24px;text-align:center}
+.event-info{flex:1}
+.event-name{font-size:12px;font-weight:700;color:#ff6b6b;margin-bottom:3px}
+.event-desc{font-size:11px;color:var(--text-secondary);line-height:1.6}
+
 .ai-loading{text-align:center;padding:20px;font-size:12px;color:var(--text-dim);display:none}
-.ai-loading .spinner{font-size:24px;animation:spin 1s linear infinite;display:block;margin-bottom:8px}
+.ai-spinner{font-size:24px;animation:spin 1s linear infinite;display:block;margin-bottom:8px}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
 .refresh-btn{width:100%;background:transparent;border:1px solid var(--blue-border);border-radius:100px;padding:13px;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
@@ -107,18 +133,23 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 
   <div class="body">
 
+    <!-- Origin — alphabetical order -->
     <div>
       <div class="section-lbl">Select Origin</div>
       <div class="origin-grid" id="origins">
-        <div class="origin-btn active" onclick="selectOrigin(this,'Ecuador',-1.83,-78.18,'🇪🇨')">🇪🇨 Ecuador</div>
+        <div class="origin-btn active" onclick="selectOrigin(this,'Cameroon',4.05,9.70,'🇨🇲')">🇨🇲 Cameroon</div>
         <div class="origin-btn" onclick="selectOrigin(this,'Colombia',4.57,-74.30,'🇨🇴')">🇨🇴 Colombia</div>
         <div class="origin-btn" onclick="selectOrigin(this,'Costa Rica',9.93,-84.09,'🇨🇷')">🇨🇷 Costa Rica</div>
+        <div class="origin-btn" onclick="selectOrigin(this,'Ecuador',-1.83,-78.18,'🇪🇨')">🇪🇨 Ecuador</div>
+        <div class="origin-btn" onclick="selectOrigin(this,'Ghana',7.95,-1.02,'🇬🇭')">🇬🇭 Ghana</div>
         <div class="origin-btn" onclick="selectOrigin(this,'Guatemala',14.64,-90.51,'🇬🇹')">🇬🇹 Guatemala</div>
-        <div class="origin-btn" onclick="selectOrigin(this,'Cameroon',4.05,9.70,'🇨🇲')">🇨🇲 Cameroon</div>
         <div class="origin-btn" onclick="selectOrigin(this,'Ivory Coast',5.35,-4.00,'🇨🇮')">🇨🇮 Ivory Coast</div>
+        <div class="origin-btn" onclick="selectOrigin(this,'Panama',8.99,-79.52,'🇵🇦')">🇵🇦 Panama</div>
+        <div class="origin-btn" onclick="selectOrigin(this,'Peru',-9.19,-75.01,'🇵🇪')">🇵🇪 Peru</div>
       </div>
     </div>
 
+    <!-- Programme -->
     <div>
       <div class="section-lbl">Ripening Programme</div>
       <div class="prog-grid">
@@ -128,6 +159,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       </div>
     </div>
 
+    <!-- Weather -->
     <div class="weather-card">
       <div class="weather-header">
         <div class="weather-header-title">Weather conditions</div>
@@ -145,9 +177,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       <div class="w-row">
         <div class="w-flag">🌊</div>
         <div class="w-info">
-          <div class="w-label">Atlantic transit route</div>
+          <div class="w-label">Atlantic / Pacific transit route</div>
           <div class="w-val" id="transit-temp">—</div>
-          <div class="w-detail" id="transit-detail">Mid-Atlantic conditions</div>
+          <div class="w-detail" id="transit-detail">Mid-ocean conditions</div>
         </div>
         <div class="w-badge badge-loading" id="transit-badge">—</div>
       </div>
@@ -172,10 +204,11 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
     </div>
 
     <div class="ai-loading" id="ai-loading">
-      <span class="spinner">⏳</span>
-      Analysing weather data...
+      <span class="ai-spinner">🧠</span>
+      Analysing weather data with AI...
     </div>
 
+    <!-- Ripening advice -->
     <div class="advice-card" id="advice-card">
       <div class="advice-header">
         <div class="advice-icon" id="advice-icon">⏳</div>
@@ -184,7 +217,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
           <div class="advice-title" id="advice-title">Calculating...</div>
         </div>
       </div>
-      <div class="advice-text" id="advice-text">Fetching live weather data from all locations. Please wait.</div>
+      <div class="advice-text" id="advice-text">Fetching live weather data. Please wait.</div>
       <div class="temp-grid">
         <div class="temp-card">
           <div class="temp-lbl">Ripening start temp</div>
@@ -201,11 +234,27 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       </div>
     </div>
 
-    <div class="error-box" id="error-box"></div>
+    <!-- Special weather events -->
+    <div class="events-card" id="events-card">
+      <div class="events-header">
+        <span style="font-size:16px;">⚠️</span>
+        <div class="events-header-title">Special Weather Events</div>
+      </div>
+      <div id="events-list"></div>
+    </div>
 
+    <!-- Defects -->
+    <div class="defects-card" id="defects-card" style="display:none">
+      <div class="defects-header">
+        <span style="font-size:16px;">🔍</span>
+        <div class="defects-header-title">Defects to Watch</div>
+      </div>
+      <div id="defects-list"></div>
+    </div>
+
+    <div class="error-box" id="error-box"></div>
     <button class="refresh-btn" id="refresh-btn" onclick="fetchAll()">↻ Refresh Weather Data</button>
     <div class="last-updated" id="last-updated"></div>
-
   </div>
 </div>
 
@@ -213,12 +262,25 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 const GROQ_API_KEY = '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';
 const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
-let currentOrigin = 'Ecuador';
-let currentLat = -1.83;
-let currentLon = -78.18;
-let currentFlag = '🇪🇨';
+let currentOrigin = 'Cameroon';
+let currentLat = 4.05;
+let currentLon = 9.70;
+let currentFlag = '🇨🇲';
 let currentProg = 6;
 let lastWeather = null;
+
+// Transit coordinates — Atlantic for Africa/Americas, Pacific approach for Peru
+const transitCoords = {
+  Cameroon: { lat: 0, lon: -15 },
+  Colombia: { lat: 15, lon: -55 },
+  'Costa Rica': { lat: 15, lon: -55 },
+  Ecuador: { lat: 15, lon: -55 },
+  Ghana: { lat: 0, lon: -15 },
+  Guatemala: { lat: 15, lon: -55 },
+  'Ivory Coast': { lat: 0, lon: -15 },
+  Panama: { lat: 15, lon: -55 },
+  Peru: { lat: 10, lon: -45 }
+};
 
 function wmoDesc(code) {
   if (code === 0) return 'Clear sky';
@@ -234,14 +296,16 @@ function wmoDesc(code) {
 }
 
 async function fetchWeather(lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weathercode,windspeed_10m&timezone=auto`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weathercode,windspeed_10m,precipitation&timezone=auto`;
   const res = await fetch(url);
   const data = await res.json();
   return {
     temp: Math.round(data.current.temperature_2m),
     humidity: data.current.relative_humidity_2m,
     wind: Math.round(data.current.windspeed_10m),
-    desc: wmoDesc(data.current.weathercode)
+    precip: data.current.precipitation,
+    desc: wmoDesc(data.current.weathercode),
+    code: data.current.weathercode
   };
 }
 
@@ -252,7 +316,7 @@ function classifyBadge(temp, humidity, type) {
     return 'badge-ok';
   }
   if (type === 'transit') {
-    if (temp >= 26) return 'badge-warn';
+    if (temp >= 26 || (humidity && humidity >= 80)) return 'badge-warn';
     return 'badge-ok';
   }
   if (type === 'arrival') {
@@ -262,51 +326,56 @@ function classifyBadge(temp, humidity, type) {
 }
 
 function badgeLabel(badge) {
-  if (badge === 'badge-bad') return 'High';
+  if (badge === 'badge-bad') return 'High stress';
   if (badge === 'badge-warn') return 'Moderate';
   return 'Normal';
 }
 
 async function askGroq(weather) {
+  const today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   const prompt = `You are a professional banana ripening expert advising fruit floor workers in the Netherlands and Belgium.
 
-Today's live weather data:
-- Origin: ${currentOrigin} — ${weather.origin.temp}°C, ${weather.origin.humidity}% humidity, ${weather.origin.desc}, wind ${weather.origin.wind} km/h
-- Atlantic transit route (mid-ocean, ~4 weeks transit): ${weather.transit.temp}°C, ${weather.transit.humidity}% humidity, ${weather.transit.desc}
-- Netherlands (Rotterdam): ${weather.nl.temp}°C, ${weather.nl.humidity}% humidity, ${weather.nl.desc}
-- Belgium (Antwerp): ${weather.be.temp}°C, ${weather.be.humidity}% humidity, ${weather.be.desc}
+Today's date: ${today}
+Origin: ${currentOrigin}
+Ripening programme: ${currentProg} days
+
+Live weather data:
+- ${currentOrigin} origin: ${weather.origin.temp}°C, ${weather.origin.humidity}% humidity, ${weather.origin.desc}, wind ${weather.origin.wind} km/h, precipitation ${weather.origin.precip}mm
+- Transit route (mid-ocean, ~4 weeks): ${weather.transit.temp}°C, ${weather.transit.humidity}% humidity, ${weather.transit.desc}, wind ${weather.transit.wind} km/h
+- Netherlands Rotterdam: ${weather.nl.temp}°C, ${weather.nl.humidity}% humidity, ${weather.nl.desc}
+- Belgium Antwerp: ${weather.be.temp}°C, ${weather.be.humidity}% humidity, ${weather.be.desc}
 
 The fruit was harvested approximately 4 weeks ago from ${currentOrigin} and is arriving now.
-The buyer wants to ripen bananas on a ${currentProg}-day ripening programme.
 
-Based on all weather conditions (origin stress, transit conditions, and arrival warehouse climate), provide:
-1. A risk assessment title (4-6 words max, e.g. "Faster than normal", "Normal ripening expected", "Significantly faster - act now")
-2. A ripening start temperature for a ${currentProg}-day programme (in °C, typically between 14.5°C and 21°C)
-3. A recommended storage/holding temperature after ripening (in °C, typically between 12°C and 14.5°C)
-4. A shelf life adjustment (e.g. "None", "-1 day", "-2 days", "+1 day", "+1-2 days")
-5. A practical advice paragraph (3-4 sentences, plain English, actionable, for a floor worker)
-6. A risk icon emoji (one of: ✓ ⚡ ⚠️ ❄️ 🌿)
+Based on ALL weather conditions provide a complete JSON response with these fields:
 
-Respond ONLY in this exact JSON format, no other text:
-{
-  "title": "...",
-  "startTemp": "XX.X°C",
-  "storageTemp": "XX.X°C",
-  "shelfAdj": "...",
-  "advice": "...",
-  "icon": "...",
-  "risk": "normal|fast|veryfast|slow|veryslow"
-}`;
+1. "title" — risk title (4-6 words, e.g. "Faster than normal")
+2. "startTemp" — ripening start temperature in °C for a ${currentProg}-day programme (typically 14.5–21°C)
+3. "storageTemp" — storage/holding temperature after ripening (typically 12–14.5°C)  
+4. "shelfAdj" — shelf life adjustment (e.g. "None", "-1 day", "-2 days", "+1 day")
+5. "advice" — practical advice paragraph (3-4 sentences, plain English, actionable for floor workers)
+6. "icon" — one emoji: ✓ ⚡ ⚠️ ❄️ 🌿
+7. "risk" — one of: normal, fast, veryfast, slow, veryslow
+8. "defects" — array of defect objects to watch, each with:
+   - "name": defect name
+   - "icon": relevant emoji
+   - "desc": 2 sentences explaining what to look for and why weather causes it
+   - "risk": "high", "medium", or "low"
+   Include 3-5 most relevant defects based on the current weather conditions.
+9. "events" — array of special weather events detected (can be empty []). Each with:
+   - "name": event name (e.g. "Tropical Storm Risk", "El Niño Conditions", "La Niña Conditions", "Extreme Heat Event", "High Humidity Alert", "Heavy Rainfall")
+   - "icon": relevant emoji
+   - "desc": 2 sentences explaining the event and its impact on banana quality
+
+Respond ONLY in valid JSON, no other text, no markdown:
+{"title":"...","startTemp":"...","storageTemp":"...","shelfAdj":"...","advice":"...","icon":"...","risk":"...","defects":[{"name":"...","icon":"...","desc":"...","risk":"..."}],"events":[{"name":"...","icon":"...","desc":"..."}]}`;
 
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${GROQ_API_KEY}`
-    },
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
     body: JSON.stringify({
       model: GROQ_MODEL,
-      max_tokens: 400,
+      max_tokens: 1000,
       temperature: 0.3,
       messages: [{ role: 'user', content: prompt }]
     })
@@ -318,7 +387,7 @@ Respond ONLY in this exact JSON format, no other text:
   return JSON.parse(clean);
 }
 
-function applyAdvice(advice) {
+function applyAdvice(result) {
   const riskColors = {
     normal:   { bg: 'rgba(166,226,46,0.04)',  border: 'rgba(166,226,46,0.2)' },
     fast:     { bg: 'rgba(255,140,0,0.05)',   border: 'rgba(255,140,0,0.2)' },
@@ -326,16 +395,49 @@ function applyAdvice(advice) {
     slow:     { bg: 'rgba(74,158,255,0.04)',  border: 'rgba(74,158,255,0.18)' },
     veryslow: { bg: 'rgba(74,158,255,0.06)',  border: 'rgba(74,158,255,0.25)' }
   };
-  const colors = riskColors[advice.risk] || riskColors.normal;
+  const colors = riskColors[result.risk] || riskColors.normal;
   const card = document.getElementById('advice-card');
   card.style.background = colors.bg;
   card.style.borderColor = colors.border;
-  document.getElementById('advice-icon').innerText = advice.icon;
-  document.getElementById('advice-title').innerText = advice.title;
-  document.getElementById('advice-text').innerText = advice.advice;
-  document.getElementById('start-temp').innerText = advice.startTemp;
-  document.getElementById('storage-temp').innerText = advice.storageTemp;
-  document.getElementById('shelf-adj').innerText = advice.shelfAdj;
+  document.getElementById('advice-icon').innerText = result.icon;
+  document.getElementById('advice-title').innerText = result.title;
+  document.getElementById('advice-text').innerText = result.advice;
+  document.getElementById('start-temp').innerText = result.startTemp;
+  document.getElementById('storage-temp').innerText = result.storageTemp;
+  document.getElementById('shelf-adj').innerText = result.shelfAdj;
+
+  // Special events
+  const eventsCard = document.getElementById('events-card');
+  const eventsList = document.getElementById('events-list');
+  if (result.events && result.events.length > 0) {
+    eventsCard.style.display = 'block';
+    eventsList.innerHTML = result.events.map(e => `
+      <div class="event-row">
+        <div class="event-icon">${e.icon}</div>
+        <div class="event-info">
+          <div class="event-name">${e.name}</div>
+          <div class="event-desc">${e.desc}</div>
+        </div>
+      </div>`).join('');
+  } else {
+    eventsCard.style.display = 'none';
+  }
+
+  // Defects
+  const defectsCard = document.getElementById('defects-card');
+  const defectsList = document.getElementById('defects-list');
+  if (result.defects && result.defects.length > 0) {
+    defectsCard.style.display = 'block';
+    defectsList.innerHTML = result.defects.map(d => `
+      <div class="defect-row">
+        <div class="defect-icon">${d.icon}</div>
+        <div class="defect-info">
+          <div class="defect-name">${d.name}</div>
+          <div class="defect-desc">${d.desc}</div>
+        </div>
+        <div class="defect-risk risk-${d.risk}">${d.risk}</div>
+      </div>`).join('');
+  }
 }
 
 async function fetchAll() {
@@ -344,25 +446,27 @@ async function fetchAll() {
   btn.innerText = '⏳ Fetching weather...';
   document.getElementById('error-box').style.display = 'none';
   document.getElementById('weather-status').innerText = 'Loading...';
+  document.getElementById('events-card').style.display = 'none';
+  document.getElementById('defects-card').style.display = 'none';
 
   try {
+    const tc = transitCoords[currentOrigin] || { lat: 15, lon: -45 };
     const [origin, transit, nl, be] = await Promise.all([
       fetchWeather(currentLat, currentLon),
-      fetchWeather(20.0, -30.0),
+      fetchWeather(tc.lat, tc.lon),
       fetchWeather(51.92, 4.48),
       fetchWeather(51.22, 4.40)
     ]);
 
     lastWeather = { origin, transit, nl, be };
 
-    // Update weather rows
     document.getElementById('origin-flag').innerText = currentFlag;
     document.getElementById('origin-w-label').innerText = currentOrigin + ' origin';
     document.getElementById('origin-temp').innerText = `${origin.temp}°C · ${origin.humidity}% humidity`;
-    document.getElementById('origin-detail').innerText = origin.desc + ` · Wind ${origin.wind} km/h`;
+    document.getElementById('origin-detail').innerText = `${origin.desc} · Wind ${origin.wind} km/h`;
 
     document.getElementById('transit-temp').innerText = `${transit.temp}°C · ${transit.humidity}% humidity`;
-    document.getElementById('transit-detail').innerText = transit.desc + ` · Wind ${transit.wind} km/h`;
+    document.getElementById('transit-detail').innerText = `${transit.desc} · Wind ${transit.wind} km/h`;
 
     document.getElementById('nl-temp').innerText = `${nl.temp}°C · ${nl.humidity}% humidity`;
     document.getElementById('nl-detail').innerText = nl.desc;
@@ -370,31 +474,30 @@ async function fetchAll() {
     document.getElementById('be-temp').innerText = `${be.temp}°C · ${be.humidity}% humidity`;
     document.getElementById('be-detail').innerText = be.desc;
 
-    // Badges
     const ob = classifyBadge(origin.temp, origin.humidity, 'origin');
     const tb = classifyBadge(transit.temp, transit.humidity, 'transit');
     const nb = classifyBadge(nl.temp, nl.humidity, 'arrival');
     const bb = classifyBadge(be.temp, be.humidity, 'arrival');
-    document.getElementById('origin-badge').className  = 'w-badge ' + ob;
-    document.getElementById('origin-badge').innerText  = badgeLabel(ob);
+    document.getElementById('origin-badge').className = 'w-badge ' + ob;
+    document.getElementById('origin-badge').innerText = badgeLabel(ob);
     document.getElementById('transit-badge').className = 'w-badge ' + tb;
     document.getElementById('transit-badge').innerText = badgeLabel(tb);
-    document.getElementById('nl-badge').className      = 'w-badge ' + nb;
-    document.getElementById('nl-badge').innerText      = badgeLabel(nb);
-    document.getElementById('be-badge').className      = 'w-badge ' + bb;
-    document.getElementById('be-badge').innerText      = badgeLabel(bb);
+    document.getElementById('nl-badge').className = 'w-badge ' + nb;
+    document.getElementById('nl-badge').innerText = badgeLabel(nb);
+    document.getElementById('be-badge').className = 'w-badge ' + bb;
+    document.getElementById('be-badge').innerText = badgeLabel(bb);
 
     document.getElementById('weather-status').innerText = '✓ Live';
 
-    // Ask Groq for advice
-    btn.innerText = '🧠 Analysing...';
+    btn.innerText = '🧠 Analysing with AI...';
     document.getElementById('ai-loading').style.display = 'block';
     document.getElementById('advice-card').style.opacity = '0.4';
 
-    const advice = await askGroq(lastWeather);
+    const result = await askGroq(lastWeather);
+
     document.getElementById('ai-loading').style.display = 'none';
     document.getElementById('advice-card').style.opacity = '1';
-    applyAdvice(advice);
+    applyAdvice(result);
 
     const now = new Date();
     document.getElementById('last-updated').innerText = `Last updated: ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
@@ -426,10 +529,10 @@ async function selectProg(el, prog) {
     document.getElementById('advice-card').style.opacity = '0.4';
     document.getElementById('ai-loading').style.display = 'block';
     try {
-      const advice = await askGroq(lastWeather);
+      const result = await askGroq(lastWeather);
       document.getElementById('ai-loading').style.display = 'none';
       document.getElementById('advice-card').style.opacity = '1';
-      applyAdvice(advice);
+      applyAdvice(result);
     } catch(e) {
       document.getElementById('ai-loading').style.display = 'none';
       document.getElementById('advice-card').style.opacity = '1';
