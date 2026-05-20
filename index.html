@@ -248,18 +248,31 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
             </div>
           </div>
           <div class="advice-text" id="a-text">—</div>
-          <div class="temp-grid">
-            <div class="tcrd">
-              <div class="tlbl">Ripening start temp</div>
-              <div class="tval green" id="a-start">—</div>
+          <div style="margin-bottom:8px;">
+            <div style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px;">Start temperature per programme</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:7px;">
+              <div class="tcrd" id="tcrd-5">
+                <div class="tlbl">5-day · Fast</div>
+                <div class="tval green" id="a-start-5">—</div>
+              </div>
+              <div class="tcrd" id="tcrd-6">
+                <div class="tlbl">6-day · Standard</div>
+                <div class="tval green" id="a-start-6">—</div>
+              </div>
+              <div class="tcrd" id="tcrd-7">
+                <div class="tlbl">7-day · Slow</div>
+                <div class="tval green" id="a-start-7">—</div>
+              </div>
             </div>
-            <div class="tcrd">
-              <div class="tlbl">Storage temp</div>
-              <div class="tval" id="a-storage">—</div>
-            </div>
-            <div class="tcrd">
-              <div class="tlbl">Shelf adjust</div>
-              <div class="tval orange" id="a-shelf">—</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+              <div class="tcrd">
+                <div class="tlbl">Storage temp</div>
+                <div class="tval" id="a-storage">—</div>
+              </div>
+              <div class="tcrd">
+                <div class="tlbl">Shelf adjust</div>
+                <div class="tval orange" id="a-shelf">—</div>
+              </div>
             </div>
           </div>
         </div>
@@ -312,9 +325,73 @@ const ORIGINS = [
   { name:'Peru',        flag:'🇵🇪', lat:-9.19, lon:-75.01, region:'South America · Pacific',transit:{lat:5,lon:-40} }
 ];
 
-let currentOrigin = null;
-let currentProg = 6;
-let lastWeather = null;
+// ── TEMPERATURE CALCULATION (done in code, not AI) ──────────────
+// Base start temps per programme
+const BASE_TEMPS = { 5: 21.0, 6: 18.5, 7: 15.5 };
+const STORAGE_TEMP = 13.5;
+
+function calcTemps(w, prog) {
+  let base = BASE_TEMPS[prog];
+  let adjustment = 0;
+
+  // Origin stress: hot & humid = reduce start temp (fruit already stressed, don't push harder)
+  if (w.origin.temp >= 30 || w.origin.humidity >= 85) adjustment -= 1.5;
+  else if (w.origin.temp >= 27 || w.origin.humidity >= 75) adjustment -= 0.5;
+  else if (w.origin.temp <= 22 && w.origin.humidity <= 65) adjustment += 0.5;
+
+  // Transit: warm sea = reduce slightly
+  if (w.transit.temp >= 27) adjustment -= 0.5;
+  else if (w.transit.temp <= 20) adjustment += 0.5;
+
+  // Arrival: warm NL/BE = reduce (fruit will ripen faster in warehouse)
+  const arrivalAvg = (w.nl.temp + w.be.temp) / 2;
+  if (arrivalAvg >= 20) adjustment -= 0.5;
+  else if (arrivalAvg <= 12) adjustment += 0.5;
+
+  // Chilling injury risk in transit: raise start temp slightly
+  if (w.transit.temp <= 14) adjustment += 1.0;
+
+  const startTemp = Math.round((base + adjustment) * 2) / 2; // round to nearest 0.5
+  return {
+    startTemp: startTemp.toFixed(1) + '°C',
+    storageTemp: STORAGE_TEMP.toFixed(1) + '°C'
+  };
+}
+
+function calcShelfAdj(w) {
+  let score = 0;
+  if (w.origin.temp >= 30 || w.origin.humidity >= 85) score += 2;
+  else if (w.origin.temp >= 27 || w.origin.humidity >= 75) score += 1;
+  else if (w.origin.temp <= 22) score -= 1;
+  if (w.transit.temp >= 27) score += 1;
+  if (w.transit.temp <= 14) score -= 1;
+  const arr = (w.nl.temp + w.be.temp) / 2;
+  if (arr >= 20) score += 1;
+  else if (arr <= 12) score -= 1;
+  if (score >= 3) return '−2 days';
+  if (score === 2) return '−1–2 days';
+  if (score === 1) return '−1 day';
+  if (score === 0) return 'None';
+  if (score === -1) return '+1 day';
+  return '+1–2 days';
+}
+
+function calcRisk(w) {
+  let score = 0;
+  if (w.origin.temp >= 30 || w.origin.humidity >= 85) score += 2;
+  else if (w.origin.temp >= 27 || w.origin.humidity >= 75) score += 1;
+  else if (w.origin.temp <= 22) score -= 1;
+  if (w.transit.temp >= 27) score += 1;
+  const arr = (w.nl.temp + w.be.temp) / 2;
+  if (arr >= 20) score += 1;
+  else if (arr <= 12) score -= 1;
+  if (score >= 4) return {risk:'veryfast', icon:'⚠️', title:'Significantly faster'};
+  if (score >= 2) return {risk:'fast',     icon:'⚡', title:'Faster than normal'};
+  if (score === 1) return {risk:'fast',    icon:'⚡', title:'Slightly faster'};
+  if (score === 0) return {risk:'normal',  icon:'✓',  title:'Normal ripening'};
+  if (score === -1) return {risk:'slow',   icon:'🌿', title:'Slightly slower'};
+  return {risk:'veryslow', icon:'❄️', title:'Slower than normal'};
+}
 
 // Build origin list
 const container = document.getElementById('origins-container');
@@ -364,8 +441,15 @@ function changeProg(el, p) {
   document.querySelectorAll('.prog-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   currentProg = p;
+  // Update highlight on temp cards
+  [5,6,7].forEach(n => {
+    const card = document.getElementById('tcrd-' + n);
+    if (card) {
+      card.style.borderColor = n === p ? 'rgba(166,226,46,0.4)' : 'rgba(255,255,255,0.05)';
+      card.style.background  = n === p ? 'rgba(166,226,46,0.06)' : 'rgba(0,0,0,0.45)';
+    }
+  });
   if (lastWeather) {
-    // Re-ask AI with same weather but new programme
     showLoading('Re-analysing for ' + p + '-day programme...');
     hideResults();
     askGroq(lastWeather).then(r => { applyResult(r); showResults(); }).catch(e => showError(e.message));
@@ -415,74 +499,63 @@ function badge(temp, humidity, type) {
 
 async function askGroq(w) {
   const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const temps = calcTemps(w, currentProg);
+  const shelfAdj = calcShelfAdj(w);
+  const riskInfo = calcRisk(w);
+
   const prompt = `You are a professional banana ripening expert advising fruit importers in the Netherlands and Belgium.
 
 TODAY: ${today}
 ORIGIN: ${currentOrigin.name} (${currentOrigin.region})
-RIPENING PROGRAMME: ${currentProg}-day
-
-TEMPERATURE RULES (STRICTLY FOLLOW):
-- 5-day programme (fast ripening): base start temp 20–22°C — higher temp speeds up the process
-- 6-day programme (standard): base start temp 17–19°C
-- 7-day programme (slow ripening): base start temp 14–16°C — lower temp slows the process
-- Adjust base temp based on stress: stressed/hot origin → reduce by 1–2°C; cool/calm → increase by 0.5–1°C
-- Storage temp after ripening: always 13–14°C regardless of programme
+PROGRAMME: ${currentProg}-day
+CALCULATED START TEMP: ${temps.startTemp}
+STORAGE TEMP: ${temps.storageTemp}
+SHELF ADJUSTMENT: ${shelfAdj}
+RISK LEVEL: ${riskInfo.risk}
 
 LIVE WEATHER:
 - ${currentOrigin.name} origin: ${w.origin.temp}°C, ${w.origin.humidity}% RH, ${w.origin.desc}, wind ${w.origin.wind} km/h, precip ${w.origin.precip}mm
-- Transit (mid-ocean, ~4 weeks journey): ${w.transit.temp}°C, ${w.transit.humidity}% RH, ${w.transit.desc}, wind ${w.transit.wind} km/h
+- Transit (mid-ocean, ~4 weeks): ${w.transit.temp}°C, ${w.transit.humidity}% RH, ${w.transit.desc}, wind ${w.transit.wind} km/h
 - Netherlands Rotterdam: ${w.nl.temp}°C, ${w.nl.humidity}% RH, ${w.nl.desc}
 - Belgium Antwerp: ${w.be.temp}°C, ${w.be.humidity}% RH, ${w.be.desc}
 
-ANALYSIS FACTORS (consider ALL):
-1. Pre-harvest heat and humidity stress at origin
-2. Storm risk: thunderstorm codes (80–99), high winds (>40 km/h), heavy precipitation
-3. El Niño / La Niña: Pacific sea surface temps — El Niño = warmer/drier origins in Africa, wetter in Americas; La Niña = opposite
-4. Chilling injury risk: transit temps below 14°C
-5. Extreme heat event: origin above 35°C
-6. Transit sea conditions: rough seas, warm water, storm systems
-7. Arrival warehouse climate: warm NL/BE = accelerates ripening on arrival
-8. Humidity-related disease pressure: RH above 85% at origin = crown rot, anthracnose risk
-9. Seasonal patterns for ${currentOrigin.region}
-10. Combined effect of all factors on final ripening speed
+Write practical advice for the ripening team using the pre-calculated temperatures above. Also identify any special weather events and defect risks based on the actual weather data.
 
-Return ONLY valid JSON (no markdown, no backticks, no extra text):
+Consider: El Niño/La Niña patterns, storm risk (high wind/thunderstorm codes), chilling injury risk (transit below 14°C), extreme heat (origin above 35°C), humidity disease pressure (RH above 85%), seasonal patterns for ${currentOrigin.region}.
+
+Return ONLY valid JSON (no markdown, no backticks):
 {
-  "title": "4-6 word risk summary",
-  "startTemp": "XX.X°C",
-  "storageTemp": "13.5°C",
-  "shelfAdj": "None or -1 day or -2 days or +1 day etc",
-  "advice": "4-5 sentences of detailed practical advice for the ripening room team: explain the start temp chosen, what combination of factors led to this, what to monitor during the programme, and any special actions needed",
-  "icon": "one emoji from: ✓ ⚡ ⚠️ ❄️ 🌿 🔥",
-  "risk": "normal or fast or veryfast or slow or veryslow",
+  "advice": "4-5 sentences of practical advice for the ripening team. Reference the start temp ${temps.startTemp} and explain why based on weather. Include what to monitor and any special actions.",
   "events": [
-    {
-      "name": "specific event name",
-      "icon": "emoji",
-      "desc": "2-3 sentences: what is happening right now, what caused it, and exactly what the team should do about it for banana quality"
-    }
+    {"name": "event name", "icon": "emoji", "desc": "2-3 sentences explaining what is happening and the impact on banana quality and what to do"}
   ],
   "defects": [
-    {
-      "name": "defect name",
-      "icon": "emoji",
-      "desc": "2 sentences: what to look for visually and exactly why current weather conditions cause this specific defect",
-      "risk": "high or medium or low"
-    }
+    {"name": "defect name", "icon": "emoji", "desc": "2 sentences: what to look for and why current weather causes this", "risk": "high or medium or low"}
   ]
 }
 
-events array: include 0–5 real detected events. Empty array if none.
-defects array: include 4–6 most relevant defects based on actual current conditions.`;
+events: 0–4 real detected events, empty array if none.
+defects: 4–6 most relevant based on actual conditions.`;
 
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':`Bearer ${GROQ_KEY}`},
-    body:JSON.stringify({model:MODEL,max_tokens:1400,temperature:0.2,messages:[{role:'user',content:prompt}]})
+    body:JSON.stringify({model:MODEL,max_tokens:1200,temperature:0.2,messages:[{role:'user',content:prompt}]})
   });
   const d = await r.json();
   const raw = d.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
-  return JSON.parse(raw);
+  const parsed = JSON.parse(raw);
+
+  // Merge pre-calculated values
+  return {
+    ...parsed,
+    startTemp: temps.startTemp,
+    storageTemp: temps.storageTemp,
+    shelfAdj: shelfAdj,
+    icon: riskInfo.icon,
+    title: riskInfo.title,
+    risk: riskInfo.risk
+  };
 }
 
 function showLoading(text) {
@@ -556,7 +629,21 @@ function applyResult(res) {
   document.getElementById('a-icon').innerText = res.icon;
   document.getElementById('a-title').innerText = res.title;
   document.getElementById('a-text').innerText = res.advice;
-  document.getElementById('a-start').innerText = res.startTemp;
+
+  // Show all three programme temps
+  [5,6,7].forEach(p => {
+    const t = calcTemps(lastWeather, p);
+    document.getElementById('a-start-' + p).innerText = t.startTemp;
+    const card = document.getElementById('tcrd-' + p);
+    if (p === currentProg) {
+      card.style.borderColor = 'rgba(166,226,46,0.4)';
+      card.style.background = 'rgba(166,226,46,0.06)';
+    } else {
+      card.style.borderColor = 'rgba(255,255,255,0.05)';
+      card.style.background = 'rgba(0,0,0,0.45)';
+    }
+  });
+
   document.getElementById('a-storage').innerText = res.storageTemp;
   document.getElementById('a-shelf').innerText = res.shelfAdj;
 
